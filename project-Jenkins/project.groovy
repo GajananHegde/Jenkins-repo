@@ -1,22 +1,16 @@
 def inject_env (String build_branch){
     env.deploy_test_var1='Var 1 - Hello'
     env.deploy_test_var2='Var 2 - World'
-    env.environ_file='.Build-Dir/project-Jenkins/.build/env'    
+    env.environ_file='.Build-Dir/Test-2/.build/env'
+
     switch(build_branch) {
-        case 'main':
-            env.deploy_test_var2='Var 2 - World - Develop branch'
-            env.deploy_airfolw_db_host='s-ccls-dashboard-dashboard-rds.cuqu1kbrsam6.us-west-2.rds.amazonaws.com'
-            env.deploy_airflow_db_port='blah blah'
-            env.deploy_airflow_db_name='another blah blah'
-            env.deploy_airflow_db_user='jenkins blah blah'
-            break
         case 'develop':
             env.deploy_test_var2='Var 2 - World - Develop branch'
-            env.deploy_airfolw_db_host='s-ccls-dashboard-dashboard-rds.cuqu1kbrsam6.us-west-2.rds.amazonaws.com'
-            env.deploy_airflow_db_port='turn the switch of the ligt madeva'
-            env.deploy_airflow_db_name='cut the apple when its ripe madeva'
-            env.deploy_airflow_db_user='madeva madeva'
-            break            
+            stage('Stage: Testing Stage execution in switch Statement'){
+                echo "Hello I m executing within a stage statement inside a switch case! Yaay!!!!"
+                sh 'echo helloshscript'
+            }
+            break
     }
 }
 
@@ -25,7 +19,7 @@ def inject_stage (String build_branch){
     echo "${build_branch}"
     echo "${env.build_branch}"
     switch(build_branch){
-        case 'main':
+        case 'develop':
             echo "We are in the switch condition of inject_stage method!"
             echo "brr"
             echo '${brr}'
@@ -34,29 +28,12 @@ def inject_stage (String build_branch){
     }
 }
 
-def configuratioin(String build_branch) {
-    // inject_env(build_branch)
-
-    sh """
-    echo 'Setting env values' """
-    // sed -i "s/<% DEPLOY_AIRFLOW_DB_HOST %>/${deploy_airfolw_db_host}/g" ${environ_file}
-    // sed -i "s/<% DEPLOY_AIRFLOW_DB_PORT %>/${deploy_airflow_db_port}/g" ${environ_file}
-    // sed -i "s/<% DEPLOY_AIRFLOW_DB_NAME %>/${deploy_airflow_db_name}/g" ${environ_file}
-    // sed -i "s/<% DEPLOY_AIRFLOW_DB_USER %>/${deploy_airflow_db_user}/g" ${environ_file}
-    // cat '.Build-Dir/project-Jenkins/.build/env'
-    // """
-    sleep(15)
-}
 
 // def mainfunc(String build_branch, String build_number, String build_job, String build_url) {
 def mainfunc(String parallel_stage){
-    echo "Tandani tane tane tandano tane nane no"
     switch(parallel_stage){
         case 'Frontend':
             echo "We are in the frontend section"
-            for(int i in 1..10){
-                print(i)
-            }
             echo "HELLO FRONTEND"
             sleep(5)
             echo "HELLO Still in FRONTEND"
