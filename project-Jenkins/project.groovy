@@ -1,3 +1,13 @@
+def for_loop_test(String[] numbers)
+{
+    command=""
+    for ( str in numbers )
+    {
+        command= command+str+" "
+    }
+    env.command1=command
+}
+
 def inject_env (String build_branch){
     env.deploy_test_var1='Var 1 - Hello'
     env.deploy_test_var2='Var 2 - World'
@@ -14,16 +24,6 @@ def inject_env (String build_branch){
     //         }
     //         break
     // }
-}
-
-def for_loop_test(String[] numbers)
-{
-    command=""
-    for ( str in numbers )
-    {
-        command= command+str+" "
-    }
-    env.command1=command
 }
 
 def inject_stage (String build_branch){
