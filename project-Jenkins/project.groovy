@@ -50,6 +50,9 @@ def mainfunc(String parallel_stage, String param12, String param13){
     switch(parallel_stage){
         case 'Frontend':
             echo "We are in the frontend section"
+            sh """
+            aws s3 ls
+            """
             // def stringArray=["one","two","three"]
             // String command = ""
             // for ( str in stringArray )
