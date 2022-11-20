@@ -1,4 +1,4 @@
-def for_loop_test(List numbers)
+def for_loop_test(String[] numbers)
 {
     command=""
     for ( str in numbers )
@@ -14,6 +14,7 @@ def inject_env (String build_branch){
     env.environ_file='.Build-Dir/Test-2/.build/env'
     env.stringArray=["one","two","three"]
     for_loop_test(env.stringArray)
+    assert env.stringArray instanceof List
 
     // switch(build_branch) {
     //     case 'develop':
