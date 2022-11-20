@@ -1,12 +1,14 @@
 def for_loop_test(String numbers)
 {
-    stringList=numbers.tokenize(",").each
-    String command=""
-    for ( str in stringList )
-    {
-        command= command+str+" "
+    stringList=numbers.tokenize(",").each { num ->
+        echo $num
     }
-    env.command1=command
+    // String command=""
+    // for ( str in stringList )
+    // {
+    //     command= command+str+" "
+    // }
+    // env.command1=command
 }
 
 def inject_env (String build_branch){
