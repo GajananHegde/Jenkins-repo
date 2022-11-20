@@ -2,15 +2,25 @@ def inject_env (String build_branch){
     env.deploy_test_var1='Var 1 - Hello'
     env.deploy_test_var2='Var 2 - World'
     env.environ_file='.Build-Dir/Test-2/.build/env'
+    def stringArray=["one","two","three"]
+    env.command=""
 
-    switch(build_branch) {
-        case 'develop':
-            env.deploy_test_var2='Var 2 - World - Develop branch'
-            stage('Stage: Testing Stage execution in switch Statement'){
-                echo "Hello I m executing within a stage statement inside a switch case! Yaay!!!!"
-                sh 'echo helloshscript'
-            }
-            break
+    // switch(build_branch) {
+    //     case 'develop':
+    //         env.deploy_test_var2='Var 2 - World - Develop branch'
+    //         stage('Stage: Testing Stage execution in switch Statement'){
+    //             echo "Hello I m executing within a stage statement inside a switch case! Yaay!!!!"
+    //             sh 'echo helloshscript'
+    //         }
+    //         break
+    // }
+}
+
+def for_loop_test(Strign[] numbers)
+{
+    for ( str in numbers )
+    {
+        ${env.command}= ${env.command}+str+" "
     }
 }
 
@@ -34,7 +44,7 @@ def mainfunc(String parallel_stage, String param12, String param13){
     switch(parallel_stage){
         case 'Frontend':
             echo "We are in the frontend section"
-            def stringArray=["one","two","three"]
+            // def stringArray=["one","two","three"]
             String command = ""
             for ( str in stringArray )
             {
@@ -44,6 +54,8 @@ def mainfunc(String parallel_stage, String param12, String param13){
             echo command
             echo param12
             echo param13
+            inject_env("dev")
+            echo "${env.command}"
             break
         case 'Backend':
             echo "We are in the Backend section"
