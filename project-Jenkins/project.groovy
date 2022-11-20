@@ -50,7 +50,6 @@ def mainfunc(String parallel_stage, String param12, String param13){
     switch(parallel_stage){
         env.env_file_name='p-bmo-commercial-nginx-prod-fr-app-1 p-bmo-commercial-nginx-prod-fr-app-2'
         env.aws_region='us-west-2'
-        env.
         case 'Frontend':
             echo "We are in the frontend section"
             sh """
