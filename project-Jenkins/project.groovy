@@ -3,7 +3,6 @@ def inject_env (String build_branch){
     env.deploy_test_var2='Var 2 - World'
     env.environ_file='.Build-Dir/Test-2/.build/env'
     def stringArray=["one","two","three"]
-    env.command=""
 
     // switch(build_branch) {
     //     case 'develop':
@@ -18,10 +17,12 @@ def inject_env (String build_branch){
 
 def for_loop_test(Strign[] numbers)
 {
+    command=""
     for ( str in numbers )
     {
-        ${env.command}= ${env.command}+str+" "
+        command= command+str+" "
     }
+    env.command1=command
 }
 
 def inject_stage (String build_branch){
@@ -55,7 +56,7 @@ def mainfunc(String parallel_stage, String param12, String param13){
             echo param12
             echo param13
             inject_env("dev")
-            echo "${env.command}"
+            echo "${env.command1}"
             break
         case 'Backend':
             echo "We are in the Backend section"
