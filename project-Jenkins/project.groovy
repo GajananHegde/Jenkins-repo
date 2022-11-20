@@ -52,6 +52,7 @@ def mainfunc(String parallel_stage, String param12, String param13){
     switch(parallel_stage){
         case 'Frontend':
             echo "We are in the frontend section"
+            inject_env("dev")
             sh """
             aws s3 ls
             aws ssm get-parameters --with-decryption --names ${env.env_file_name}} --region ${env.aws_region} | jq -r '.Parameters[].Value'
@@ -66,7 +67,6 @@ def mainfunc(String parallel_stage, String param12, String param13){
             // echo command
             echo param12
             echo param13
-            inject_env("dev")
             echo "${env.command1}"
             break
         case 'Backend':
