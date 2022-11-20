@@ -1,6 +1,6 @@
 def for_loop_test(String numbers)
 {
-    stringList=numbers.tokenize(",").each { num ->
+    numbers.tokenize(",").each { num ->
         echo $num
     }
     // String command=""
