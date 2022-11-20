@@ -55,7 +55,7 @@ def mainfunc(String parallel_stage, String param12, String param13){
             inject_env("dev")
             sh """
             aws s3 ls
-            aws ssm get-parameters --with-decryption --names ${env.env_file_name}} --region ${env.aws_region} | jq -r '.Parameters[].Value'
+            aws ssm get-parameters --with-decryption --names ${env.env_file_name} --region ${env.aws_region} | jq -r '.Parameters[].Value'
             """
             // def stringArray=["one","two","three"]
             // String command = ""
