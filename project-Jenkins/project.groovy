@@ -15,7 +15,7 @@ def inject_env (String build_branch){
     env.deploy_test_var1='Var 1 - Hello'
     env.deploy_test_var2='Var 2 - World'
     env.environ_file='.Build-Dir/Test-2/.build/env'
-    env.env_file_name="\'p-bmo-commercial-nginx-prod-fr-app-1\' \'p-bmo-commercial-nginx-prod-fr-app-2\'"
+    env.env_file_name="\'p-bmo-commercial-nginx-ca-harris-prod-app-1\' \'p-bmo-commercial-nginx-ca-harris-prod-app-2\' ''p-bmo-commercial-nginx-ca-harris-prod-app-3\'"
     env.aws_region='us-west-2'
     env.stringArray="one,two,three"
     for_loop_test(env.stringArray)
@@ -55,7 +55,7 @@ def mainfunc(String parallel_stage, String param12, String param13){
             inject_env("dev")
             sh """
             aws s3 ls
-            aws ssm get-parameters --with-decryption --names ${env.env_file_name} --region ${env.aws_region} | jq -r '.Parameters[].Value'
+            aws ssm get-parameters --with-decryption --names p-bmo-commercial-nginx-prod-fr-app-1 p-bmo-commercial-nginx-prod-fr-app-2 --region ${env.aws_region} | jq -r '.Parameters[].Value'
             """
             // def stringArray=["one","two","three"]
             // String command = ""
