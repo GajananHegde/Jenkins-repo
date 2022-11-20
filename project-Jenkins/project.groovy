@@ -1,4 +1,4 @@
-def for_loop_test(String[] numbers)
+def for_loop_test(List numbers)
 {
     command=""
     for ( str in numbers )
