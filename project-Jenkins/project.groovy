@@ -1,7 +1,7 @@
 def for_loop_test(String numbers)
 {
     numbers.tokenize(",").each { num ->
-        echo $num
+        echo "$num"
     }
     // String command=""
     // for ( str in stringList )
