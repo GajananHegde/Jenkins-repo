@@ -1,7 +1,8 @@
-def for_loop_test(String[] numbers)
+def for_loop_test(String numbers)
 {
-    command=""
-    for ( str in numbers )
+    stringList=numbers.tokenize(",").each
+    String command=""
+    for ( str in stringList )
     {
         command= command+str+" "
     }
@@ -12,7 +13,7 @@ def inject_env (String build_branch){
     env.deploy_test_var1='Var 1 - Hello'
     env.deploy_test_var2='Var 2 - World'
     env.environ_file='.Build-Dir/Test-2/.build/env'
-    env.stringArray=["one","two","three"]
+    env.stringArray="one,two,three"
     for_loop_test(env.stringArray)
     print(env.stringArray instanceof String)
 
