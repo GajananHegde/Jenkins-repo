@@ -13,8 +13,8 @@ def inject_env (String build_branch){
     env.deploy_test_var2='Var 2 - World'
     env.environ_file='.Build-Dir/Test-2/.build/env'
     env.stringArray=["one","two","three"]
-    for_loop_test(env.stringArray)
-    assert env.stringArray instanceof List
+    // for_loop_test(env.stringArray)
+    print(env.stringArray instanceof List)
 
     // switch(build_branch) {
     //     case 'develop':
