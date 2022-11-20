@@ -15,7 +15,7 @@ def inject_env (String build_branch){
     // }
 }
 
-def for_loop_test(Strign[] numbers)
+def for_loop_test(String[] numbers)
 {
     command=""
     for ( str in numbers )
