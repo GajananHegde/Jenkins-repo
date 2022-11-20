@@ -30,11 +30,12 @@ def inject_stage (String build_branch){
 
 
 // def mainfunc(String build_branch, String build_number, String build_job, String build_url) {
-def mainfunc(String parallel_stage, String param12){
+def mainfunc(String parallel_stage, String param12, String param13){
     switch(parallel_stage){
         case 'Frontend':
             echo "We are in the frontend section"
             echo param12
+            echo param13
             echo "HELLO FRONTEND"
             sleep(5)
             echo "HELLO Still in FRONTEND"
