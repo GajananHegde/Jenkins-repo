@@ -35,7 +35,8 @@ def mainfunc(String parallel_stage, String param12, String param13){
         case 'Frontend':
             echo "We are in the frontend section"
             env.stringArray=["one","two","three"]
-            echo "${env.stringArray.size()}"
+            env.stringSize=${env.stringArray}.size()
+            echo "${env.stringSize}"
             echo param12
             echo param13
             break
