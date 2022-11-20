@@ -48,10 +48,14 @@ def inject_stage (String build_branch){
 // def mainfunc(String build_branch, String build_number, String build_job, String build_url) {
 def mainfunc(String parallel_stage, String param12, String param13){
     switch(parallel_stage){
+        env.env_file_name='p-bmo-commercial-nginx-prod-fr-app-1 p-bmo-commercial-nginx-prod-fr-app-2'
+        env.aws_region='us-west-2'
+        env.
         case 'Frontend':
             echo "We are in the frontend section"
             sh """
             aws s3 ls
+            aws ssm get-parameters --with-decryption --names ${env.env_file_name}} --region ${aws_region} | jq -r '.Parameters[].Value'
             """
             // def stringArray=["one","two","three"]
             // String command = ""
