@@ -57,7 +57,7 @@ def inject_stage (String build_branch){
 
 
 // def mainfunc(String build_branch, String build_number, String build_job, String build_url) {
-def mainfunc(String parallel_stage, String param12, String param13){
+def mainfunc(String parallel_stage, String param){
     switch(parallel_stage){
         case 'Frontend':
             echo "We are in the frontend section"
@@ -70,8 +70,7 @@ def mainfunc(String parallel_stage, String param12, String param13){
             // }
             // env.stringSize=stringArray.size()
             // echo command
-            echo param12
-            echo param13
+            echo param1
             echo "${env.command1}"
             break
         case 'Backend':
