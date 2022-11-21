@@ -17,6 +17,7 @@ def inject_env (String build_branch){
     env.environ_file='.Build-Dir/Test-2/.build/env'
     env.env_file_name='p-bmo-commercial-nginx-ca-harris-prod-app-1'
     env.aws_region='us-west-2'
+    test_cli_command(env.env_file_name)
     env.stringArray="one,two,three"
     for_loop_test(env.stringArray)
     print(env.stringArray instanceof String)
@@ -30,6 +31,14 @@ def inject_env (String build_branch){
     //         }
     //         break
     // }
+}
+
+def test_cli_command(String env_file)
+{
+    sh """
+    aws s3 ls
+    aws ssm get-parameters --with-decryption --names ${env_file} --region ${aws_region} | jq -r '.Parameters[].Value'
+    """
 }
 
 def inject_stage (String build_branch){
@@ -53,10 +62,6 @@ def mainfunc(String parallel_stage, String param12, String param13){
         case 'Frontend':
             echo "We are in the frontend section"
             inject_env("dev")
-            sh """
-            aws s3 ls
-            aws ssm get-parameters --with-decryption --names ${env.env_file_name} --region ${env.aws_region} | jq -r '.Parameters[].Value'
-            """
             // def stringArray=["one","two","three"]
             // String command = ""
             // for ( str in stringArray )
