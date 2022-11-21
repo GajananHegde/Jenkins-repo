@@ -70,7 +70,7 @@ def mainfunc(String parallel_stage, String param){
             // }
             // env.stringSize=stringArray.size()
             // echo command
-            echo param1
+            echo param
             echo "${env.command1}"
             break
         case 'Backend':
