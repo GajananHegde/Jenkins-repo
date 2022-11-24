@@ -63,7 +63,7 @@ def mainfunc(String parallel_stage, String param){
             echo "We are in the frontend section"
             sh """
             pwd
-            ls -l .
+            ls -al .
             """
             inject_env("dev")
             // def stringArray=["one","two","three"]
