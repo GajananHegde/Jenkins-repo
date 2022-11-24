@@ -61,6 +61,10 @@ def mainfunc(String parallel_stage, String param){
     switch(parallel_stage){
         case 'Frontend':
             echo "We are in the frontend section"
+            sh """
+            pwd
+            ls -l .
+            """
             inject_env("dev")
             // def stringArray=["one","two","three"]
             // String command = ""
