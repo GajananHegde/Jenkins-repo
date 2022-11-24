@@ -17,7 +17,7 @@ def inject_env (String build_branch){
     env.environ_file='.Build-Dir/project-Jenkins/.build/env'
     env.env_file_name="\'p-bmo-commercial-nginx-us-redirect-prod-app-1\' \'p-bmo-commercial-nginx-us-redirect-prod-app-2\'"
     env.aws_region='us-west-2'
-    test_cli_command(env.env_file_name)
+    // test_cli_command(env.env_file_name)
     env.stringArray="one,two,three"
     for_loop_test(env.stringArray)
     print(env.stringArray instanceof String)
