@@ -63,8 +63,12 @@ def mainfunc(String parallel_stage, String param){
         case 'Frontend':
             echo "We are in the frontend section"
             sh """
-            pwd
-            ls -al .
+            aws ecs run-task \
+                --cluster p-dash-rdsbackup \
+                --task-definition rdsbackup-taskdefinitions \
+                --launch-type FARGATE \
+                --overrides '{"containerOverrides": [{"name": "rdsbackup", "environment": [{ "name": "CLIENT_NAME_BUILD", "value": "demo"}]}]}' \
+                --network-configuration "awsvpcConfiguration={subnets=['subnet-009b9198c8c676ea5'],securityGroups=['sg-0cf66b11b856e9af5'],assignPublicIp='ENABLED'}"
             """
             inject_env("dev")
             // def stringArray=["one","two","three"]
@@ -106,6 +110,7 @@ def mainfunc2(String build_branch, String build_number, String build_job, String
         }
 
         sh """
+
         cat ${environ_file}
         ls -larth
         """
