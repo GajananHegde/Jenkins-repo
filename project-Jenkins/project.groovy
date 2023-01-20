@@ -67,7 +67,7 @@ def mainfunc(String parallel_stage, String param){
                 --cluster p-dash-rdsbackup \
                 --task-definition rdsbackup-taskdefinitions \
                 --launch-type FARGATE \
-                --overrides '{"containerOverrides": [{"name": "rdsbackup", "environment": [{ "name": "CLIENT_NAME_BUILD", "value": ${param}}]}]}' \
+                --overrides '{"containerOverrides": [{"name": "rdsbackup", "environment": [{ "name": "CLIENT_NAME_BUILD", "value": "${param}"}]}]}' \
                 --network-configuration "awsvpcConfiguration={subnets=['subnet-009b9198c8c676ea5'],securityGroups=['sg-0cf66b11b856e9af5'],assignPublicIp='ENABLED'}"
             """
             // inject_env("dev")
