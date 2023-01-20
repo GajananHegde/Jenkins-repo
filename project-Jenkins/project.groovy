@@ -70,7 +70,7 @@ def mainfunc(String parallel_stage, String param){
                 --overrides '{"containerOverrides": [{"name": "rdsbackup", "environment": [{ "name": "CLIENT_NAME_BUILD", "value": "demo"}]}]}' \
                 --network-configuration "awsvpcConfiguration={subnets=['subnet-009b9198c8c676ea5'],securityGroups=['sg-0cf66b11b856e9af5'],assignPublicIp='ENABLED'}"
             """
-            inject_env("dev")
+            // inject_env("dev")
             // def stringArray=["one","two","three"]
             // String command = ""
             // for ( str in stringArray )
@@ -79,11 +79,11 @@ def mainfunc(String parallel_stage, String param){
             // }
             // env.stringSize=stringArray.size()
             // echo command
-            echo param
-            echo "${env.command1}"
-            sh """
-            cat ${env.environ_file}
-            """
+            // echo param
+            // echo "${env.command1}"
+            // sh """
+            // cat ${env.environ_file}
+            // """
             break
         case 'Backend':
             echo "We are in the Backend section"
