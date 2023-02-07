@@ -64,7 +64,7 @@ def mainfunc(String parallel_stage, String param){
             echo "We are in the frontend section"
             inject_env()
             sh """
-            sed -i "s@<% DEPLOY_AIRFLOW_DB_USER %>@${parallel_stage}-${param}@g" ${environ_file} || exit 1
+            sed -i "s/<% DEPLOY_AIRFLOW_DB_USER %>/${parallel_stage}-${param}/g" ${environ_file} || exit 1
             cat ${environ_file}
             """
             // def stringArray=["one","two","three"]
