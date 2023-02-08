@@ -57,12 +57,15 @@ def inject_stage (String build_branch){
 
 
 // def mainfunc(String build_branch, String build_number, String build_job, String build_url) {
-def mainfunc(String parallel_stage, String param){
+def mainfunc(String[] choices, String param){
     echo "-- ENV for building - ${param}"
     switch(parallel_stage){
         case 'Frontend':
             echo "We are in the frontend section"
             inject_env()
+            for ( str in choices){
+                print(str)
+            }
             sh """
                 sed -i '' -e "s/<% DEPLOY_AIRFLOW_DB_USER %>/${parallel_stage}-${param}/g" ${environ_file}
                 cat ${environ_file}
