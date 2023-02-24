@@ -12,6 +12,7 @@ def for_loop_test(String numbers)
 }
 
 def inject_env (){
+    env.HEY_YO_THIS_IS_THE_PLACE_HOLDER = ''
     env.deploy_test_var1='Var 1 - Hello'
     env.deploy_test_var2='Var 2 - World'
     env.environ_file='.Build-Dir/project-Jenkins/.build/env'
@@ -68,6 +69,7 @@ def mainfunc(String choices, String param){
             }
             sh """
                 sed -i '' -e "s/<% DEPLOY_AIRFLOW_DB_USER %>/${param}-${param}/g" ${environ_file}
+                sed -i '' -e "s/<% Hey_yo_this_is_the_place_holder %>/${HEY_YO_THIS_IS_THE_PLACE_HOLDER}/g" ${environ_file}
                 cat ${environ_file}
             """
             // def stringArray=["one","two","three"]
