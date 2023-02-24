@@ -12,7 +12,7 @@ def for_loop_test(String numbers)
 }
 
 def inject_env (){
-    env.HEY_YO_THIS_IS_THE_PLACE_HOLDER = ''
+    env.HEY_YO_THIS_IS_THE_PLACE_HOLDER = '--firstArg first --secondArg second'
     env.deploy_test_var1='Var 1 - Hello'
     env.deploy_test_var2='Var 2 - World'
     env.environ_file='.Build-Dir/project-Jenkins/.build/env'
