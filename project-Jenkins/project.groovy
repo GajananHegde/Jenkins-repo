@@ -62,6 +62,12 @@ def mainfunc(String choices, String param){
     echo "-- ENV for building - ${param}"
     switch(param){
         case 'Frontend':
+            withCredentials([usernamePassword(credentialsId: 'System', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+            def encodedPassword = URLEncoder.encode("$GIT_PASSWORD",'UTF-8')
+            sh '''
+            echo "GIT_USERNAME"
+            '''
+            }
             echo "We are in the frontend section"
             inject_env()
             for ( str in choices){
