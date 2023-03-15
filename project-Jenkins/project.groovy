@@ -62,7 +62,7 @@ def mainfunc(String choices, String param){
     echo "-- ENV for building - ${param}"
     switch(param){
         case 'Frontend':
-            withCredentials([usernamePassword(credentialsId: 'test-masking', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+            withCredentials([usernamePassword(credentialsId: 'bad9031b-235c-4373-be6f-4448ea28e601', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
             def encodedPassword = URLEncoder.encode("$GIT_PASSWORD",'UTF-8')
             sh '''
             echo hey this is the p[assword] "${GIT_PASSWORD}"
