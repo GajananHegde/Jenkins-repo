@@ -11,7 +11,7 @@ def for_loop_test(String numbers)
     // env.command1=command
 }
 
-def inject_env (){
+def inject_env (String variable1){
     env.HEY_YO_THIS_IS_THE_PLACE_HOLDER = '--firstArg first --secondArg second'
     env.deploy_test_var1='Var 1 - Hello'
     env.deploy_test_var2='Var 2 - World'
@@ -19,9 +19,12 @@ def inject_env (){
     env.env_file_name="\'p-bmo-commercial-nginx-us-redirect-prod-app-1\' \'p-bmo-commercial-nginx-us-redirect-prod-app-2\'"
     env.aws_region='us-west-2'
     // test_cli_command(env.env_file_name)
-    env.stringArray="one,two,three"
-    for_loop_test(env.stringArray)
-    print(env.stringArray instanceof String)
+    // env.stringArray="one,two,three"
+    // for_loop_test(env.stringArray)
+    // print(env.stringArray instanceof String)
+    sh """
+    echo "${variable1} this is the test"
+    """
 
     // switch(build_branch) {
     //     case 'develop':
@@ -60,6 +63,8 @@ def inject_stage (String build_branch){
 // def mainfunc(String build_branch, String build_number, String build_job, String build_url) {
 def mainfunc(String choices, String param){
     echo "-- ENV for building - ${param}"
+    env.variable1 = 'Hohoho'
+    env.variable2 = 'Hehehe'
     switch(param){
         case 'Frontend':
             withCredentials([usernamePassword(credentialsId: 'bad9031b-235c-4373-be6f-4448ea28e601', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
@@ -69,15 +74,16 @@ def mainfunc(String choices, String param){
             '''
             }
             echo "We are in the frontend section"
-            inject_env()
-            for ( str in choices){
-                print(str)
-            }
-            sh """
-                sed -i '' -e "s/<% DEPLOY_AIRFLOW_DB_USER %>/${param}-${param}/g" ${environ_file}
-                sed -i '' -e "s/<% Hey_yo_this_is_the_place_holder %>/${HEY_YO_THIS_IS_THE_PLACE_HOLDER}/g" ${environ_file}
-                cat ${environ_file}
-            """
+            inject_env(env.variable1)
+            inject_env(env.variable2)
+            // for ( str in choices){
+            //     print(str)
+            // }
+            // sh """
+            //     sed -i '' -e "s/<% DEPLOY_AIRFLOW_DB_USER %>/${param}-${param}/g" ${environ_file}
+            //     sed -i '' -e "s/<% Hey_yo_this_is_the_place_holder %>/${HEY_YO_THIS_IS_THE_PLACE_HOLDER}/g" ${environ_file}
+            //     cat ${environ_file}
+            // """
             // def stringArray=["one","two","three"]
             // String command = ""
             // for ( str in stringArray )
