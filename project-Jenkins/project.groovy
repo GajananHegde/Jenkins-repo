@@ -30,14 +30,14 @@ def inject_env (String variable1){
     pwd
     export PATH=/usr/local/bin
     /usr/local/bin/docker-compose -f ${docker_compose_file_nginx} down
-    sleep 5
+    /bin/sleep 5
     /usr/local/bin/docker-compose -f ${docker_compose_file_nginx} up -d
-    sleep 5
+    /bin/sleep 5
     rm -rf conf.d
     mkdir conf.d
     cp -r actual_conf/* conf.d/
     /usr/local/bin/docker-compose -f ${docker_compose_file_nginx} exec -T nginx nginx -s reload
-    sleep 5
+    /bin/sleep 5
     /usr/local/bin/docker-compose -f ${docker_compose_file_nginx} down
     """
 
