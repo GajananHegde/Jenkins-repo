@@ -17,7 +17,7 @@ def inject_env (String variable1){
     env.deploy_test_var2='Var 2 - World'
     env.environ_file='.Build-Dir/project-Jenkins/.build/env'
     env.nginx_file_path = '.Build-Dir/project-Jenkins/.build/'
-    env.docker_compose_file_nginx='.Build-Dir/project-Jenkins/.build/docker-compose-nginx.yml'
+    env.nginx_configs_path='.Build-Dir/project-Jenkins/.build/nginx'
     env.env_file_name="\'p-bmo-commercial-nginx-us-redirect-prod-app-1\' \'p-bmo-commercial-nginx-us-redirect-prod-app-2\'"
     env.aws_region='us-west-2'
     // test_cli_command(env.env_file_name)
@@ -27,15 +27,14 @@ def inject_env (String variable1){
     sh """
     echo "${variable1} this is the test"
     export PATH=/usr/local/bin
-    /usr/local/bin/docker-compose -f ${docker_compose_file_nginx} down
-    /bin/sleep 5
-    /usr/local/bin/docker-compose -f ${docker_compose_file_nginx} up -d
-    /bin/sleep 5
-    /bin/rm -rf conf.d && /bin/mkdir conf.d
-    /bin/cp -r actual_conf/* conf.d/
-    /usr/local/bin/docker-compose -f ${docker_compose_file_nginx} exec -T nginx nginx -s reload
-    /bin/sleep 5
-    /usr/local/bin/docker-compose -f ${docker_compose_file_nginx} down
+    /usr/local/bin/docker-compose -f ${docker_compose_file_nginx}/docker-compose-nginx.yml down
+    /bin/sleep 3
+    /usr/local/bin/docker-compose -f ${docker_compose_file_nginx}/docker-compose-nginx.yml up -d
+    /bin/sleep 3
+    /bin/rm -rf ${docker_compose_file_nginx}/conf.d && /bin/mkdir ${docker_compose_file_nginx}/conf.d && /bin/cp -r ${docker_compose_file_nginx}/actual_conf/* ${docker_compose_file_nginx}/conf.d/
+    /usr/local/bin/docker-compose -f ${docker_compose_file_nginx}/docker-compose-nginx.yml exec -T nginx nginx -s reload
+    /bin/sleep 3
+    /usr/local/bin/docker-compose -f ${docker_compose_file_nginx}/docker-compose-nginx.yml down
     """
 
     // switch(build_branch) {
