@@ -1,7 +1,7 @@
 version: "3"
 
 services:
-  nginx:
+  nginx-test:
     image: nginx:1.19-alpine
     container_name: nginx
     network_mode: "host"
