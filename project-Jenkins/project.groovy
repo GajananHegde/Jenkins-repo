@@ -28,10 +28,9 @@ def inject_env (String variable1){
     echo "${variable1} this is the test"
     cd ${nginx_file_path}
     pwd
-    docker-compose -f ${docker_compose_file_nginx} up -d
-    pwd
-    docker-compose -f ${docker_compose_file_nginx} exec -T nginx nginx -s reload
-    docker-compose -f ${docker_compose_file_nginx} down
+    /usr/local/bin/docker-compose -f ${docker_compose_file_nginx} up -d
+    /usr/local/bin/docker-compose -f ${docker_compose_file_nginx} exec -T nginx nginx -s reload
+    /usr/local/bin/docker-compose -f ${docker_compose_file_nginx} down
     """
 
     // switch(build_branch) {
