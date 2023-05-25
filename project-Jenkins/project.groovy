@@ -17,7 +17,7 @@ def inject_env (String variable1){
     env.deploy_test_var2='Var 2 - World'
     env.environ_file='.Build-Dir/project-Jenkins/.build/env'
     env.nginx_file_path = '.Build-Dir/project-Jenkins/.build/'
-    env.docker_compose_file_nginx='.Build-Dir/project-Jenkins/.build/docker-compose-nginx.yml'
+    env.docker_compose_file_nginx='docker-compose-nginx.yml'
     env.env_file_name="\'p-bmo-commercial-nginx-us-redirect-prod-app-1\' \'p-bmo-commercial-nginx-us-redirect-prod-app-2\'"
     env.aws_region='us-west-2'
     // test_cli_command(env.env_file_name)
