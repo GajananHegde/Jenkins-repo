@@ -31,7 +31,8 @@ def inject_env (String variable1){
     /bin/sleep 5
     /usr/local/bin/docker-compose -f ${docker_compose_file_nginx} up -d
     /bin/sleep 5
-    /bin/rm -rf conf.d && /bin/mkdir conf.d && /bin/cp -r actual_conf/* conf.d/
+    /bin/rm -rf conf.d && /bin/mkdir conf.d
+    /bin/cp -r actual_conf/* conf.d/
     /usr/local/bin/docker-compose -f ${docker_compose_file_nginx} exec -T nginx nginx -s reload
     /bin/sleep 5
     /usr/local/bin/docker-compose -f ${docker_compose_file_nginx} down
