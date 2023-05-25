@@ -29,6 +29,7 @@ def inject_env (String variable1){
     cd ${nginx_file_path}
     pwd
     export PATH=/usr/local/bin
+    /usr/local/bin/docker-compose down
     /usr/local/bin/docker-compose -f ${docker_compose_file_nginx} up -d
     sleep 5
     rm -rf conf.d
