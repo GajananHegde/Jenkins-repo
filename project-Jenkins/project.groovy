@@ -27,14 +27,15 @@ def inject_env (String variable1){
     sh """
     echo "${variable1} this is the test"
     export PATH=/usr/local/bin
-    /usr/local/bin/docker-compose -f ${nginx_configs_path}/docker-compose-nginx.yml down
+    cd ${nginx_configs_path}
+    /usr/local/bin/docker-compose -f docker-compose-nginx.yml down
     /bin/sleep 3
-    /usr/local/bin/docker-compose -f ${nginx_configs_path}/docker-compose-nginx.yml up -d
+    /usr/local/bin/docker-compose -f docker-compose-nginx.yml up -d
     /bin/sleep 3
-    /bin/rm -rf ${nginx_configs_path}/conf.d && /bin/mkdir ${nginx_configs_path}/conf.d && /bin/cp -r ${nginx_configs_path}/actual_conf/* ${nginx_configs_path}/conf.d/
-    /usr/local/bin/docker-compose -f ${nginx_configs_path}/docker-compose-nginx.yml exec -T nginx nginx -s reload
+    /bin/rm -rf conf.d && /bin/mkdir conf.d && /bin/cp -r actual_conf/* conf.d/
+    /usr/local/bin/docker-compose -f docker-compose-nginx.yml exec -T nginx nginx -s reload
     /bin/sleep 3
-    /usr/local/bin/docker-compose -f ${nginx_configs_path}/docker-compose-nginx.yml down
+    /usr/local/bin/docker-compose -f docker-compose-nginx.yml down
     """
 
     // switch(build_branch) {
