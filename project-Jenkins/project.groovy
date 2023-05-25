@@ -32,7 +32,7 @@ def inject_env (String variable1){
     /bin/sleep 3
     /usr/local/bin/docker-compose -f docker-compose-nginx.yml up -d
     /bin/sleep 3
-    /bin/rm -rf conf.d && /bin/mkdir conf.d && /bin/cp -r conf.d/* conf_template/
+    /bin/rm -rf conf_template && /bin/mkdir conf_template && /bin/cp -r conf.d/* conf_template/
     /usr/local/bin/docker-compose -f docker-compose-nginx.yml exec -T nginx nginx -s reload
     /bin/sleep 3
     /usr/local/bin/docker-compose -f docker-compose-nginx.yml down
