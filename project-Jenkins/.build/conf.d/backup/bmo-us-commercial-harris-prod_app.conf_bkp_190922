@@ -1,0 +1,17 @@
+server {
+  if ($request_method !~ ^(GET|POST|PUT|DELETE|OPTIONS)$) {
+    return 444;
+  }
+
+  listen 80;
+
+  server_name commercial.bmoharris.com www.commercial.bmoharris.com;
+  server_tokens off;
+
+  rewrite ^\/(en)\/(resource)\/(.*)$ https://commercial.bmo.com/$1/us/$2/$3 last;
+  rewrite ^\/(en)\/(industry-expertise)\/(.*)$ https://commercial.bmo.com/$1/us/$2/$3 last;
+  rewrite ^\/(en)\/(we-can-help)\/(.*)$ https://commercial.bmo.com/$1/us/$2/$3 last;
+  rewrite ^\/(en)\/(our-bankers)\/(.*)$ https://commercial.bmo.com/$1/us/$2/$3 last;
+  rewrite ^\/(en)\/(who-we-are)\/(.*)$ https://commercial.bmo.com/$1/us/$2/$3 last;
+  rewrite ^\/ https://commercial.bmo.com/en/us last;
+}

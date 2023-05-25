@@ -1,0 +1,79 @@
+server {
+    listen       *:80;
+    listen       *:443 ssl http2;
+
+    ssl_certificate /etc/nginx/conf.d/$sub.crt;
+    ssl_certificate_key /etc/nginx/conf.d/$sub.key;
+    ssl_dhparam /etc/nginx/conf.d/$sub.dhparam.pem;
+    ssl_session_cache shared:SSL:10m;
+    ssl_session_timeout 180m;
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+    ssl_prefer_server_ciphers on;
+    ssl_ciphers ECDH+AESGCM:ECDH+AES256:ECDH+AES128:DHE+AES128:!ADH:!AECDH:!MD5;
+
+    add_header Strict-Transport-Security "max-age=31536000" always;
+
+    server_name "~^(?<sub>.+)$";
+    # server_name "~^(?<sub>.+)\.example\.com$"
+    # server_name "~^(?<sub>.+)\.domain\.tld$"
+
+    server_tokens off;
+
+    charset              utf-8;
+
+    client_max_body_size 4G;
+
+    # access_log /var/log/nginx/$sub.access.log main;
+    # error_log /var/log/nginx/$sub.error.log;
+
+    root /usr/share/nginx/html/$sub;
+    index index.html;
+
+    auth_basic "Restricted Content";
+    auth_basic_user_file /usr/share/nginx/html/$sub/.htpasswd;
+
+    location / {
+      if ($scheme = 'http') {
+        return 302 https://$host$request_uri;
+      }
+
+      location ~* \.(?:manifest|appcache|html?|xml|json)$ {
+        add_header Cache-Control "max-age=0";
+      }
+
+      location ~* \.(?:rss|atom)$ {
+        add_header Cache-Control "max-age=3600";
+      }
+
+      location ~* \.(?:jpg|jpeg|gif|png|ico|cur|gz|svg|mp4|ogg|ogv|webm|htc)$ {
+        add_header Cache-Control "max-age=2592000";
+        access_log off;
+        error_log off;
+      }
+
+      location ~* \.svgz$ {
+        add_header Cache-Control "max-age=2592000";
+        gzip off;
+        access_log off;
+        error_log off;
+      }
+
+      location ~* \.(?:css|js)$ {
+        add_header Cache-Control "max-age=31536000";
+        access_log off;
+        error_log off;
+      }
+
+      location ~* \.(?:ttf|ttc|otf|eot|woff|woff2)$ {
+        add_header Cache-Control "max-age=2592000";
+        access_log off;
+        error_log off;
+      }
+
+      location ~ /\.ht {
+        deny all;
+      }
+
+      try_files $uri $uri/ =404;
+    }
+}

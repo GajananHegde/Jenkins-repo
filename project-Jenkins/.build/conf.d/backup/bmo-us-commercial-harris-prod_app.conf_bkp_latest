@@ -1,0 +1,95 @@
+server {
+  if ($request_method !~ ^(GET|POST|PUT|DELETE|OPTIONS)$) {
+    return 444;
+  }
+
+  listen 80;
+
+  #remove query strings - updated - Ishwarya - 200922
+  if ($args ~* "(ecid=|va-|DT)") {
+    #? in uri? drops the ecid query string
+    rewrite ^(.*)$ $uri? permanent;
+  }
+  server_name commercial.bmoharris.com www.commercial.bmoharris.com;
+  server_tokens off;
+
+
+  #redirect-https://gale43.atlassian.net/jira/servicedesk/projects/DHD/queues/issue/DHD-16948
+
+  #####
+  #rewrite ^\/(us)\/(commercial)/(\?ecid\=va\-DT\-9223\-SKBMOH35) https://commercial.bmo.com/en/us/we-can-help/mergers-acquisitions/ permanent;
+  #rewrite ^/en/search/\?keywords\=covid\-19\&language\/(.*)$ https://commercial.bmo.com/en/us/we-can-help/addressing-covid-19/ permanent;
+  #updated - 21-09-22
+  rewrite ^\/(en)\/(search)\/(.*)$ https://commercial.bmo.com/en/us/we-can-help/addressing-covid-19/ permanent;
+  rewrite ^/en/we\-can\-help/doing\-business\-in\-canada\/(.*) https://commercial.bmo.com/en/ca/we-can-help/doing-business-us/ permanent;
+  rewrite ^/en/industry\-expertise/franchise/ https://commercial.bmo.com/en/ca/industry-expertise/franchise-finance/ permanent;
+  rewrite ^/us/commercial/industry\-expertise/retail\-and\-wholesale\-distribution(.*)$ https://commercial.bmo.com/en/us/industry-expertise/retail/ permanent;
+  rewrite ^/industry-expertise/transportation\-finance(.*) https://commercial.bmo.com/en/us/industry-expertise/us-trucking/ permanent;
+  #####
+  rewrite ^\/(us)\/(commercial)\/(industry-expertise)\/(agribusiness-and-protein)\/(.*)$  https://commercial.bmo.com/en/us/industry-expertise/agribusiness-protein/ permanent;
+  rewrite ^\/(us)\/(commercial)\/(industry-expertise)\/(agriculture)\/(.*)$ https://commercial.bmo.com/en/us/industry-expertise/agriculture/ permanent;
+  rewrite ^\/(us)\/(commercial)\/(industry-expertise)\/(auto-dealerships)\/(.*)$ https://commercial.bmo.com/en/us/industry-expertise/auto-dealerships/ permanent;
+  rewrite ^\/(us)\/(commercial)\/(industry-expertise)\/(engineering-and-construction)\/(.*)$ https://commercial.bmo.com/en/us/industry-expertise/engineering-construction/  permanent;
+  rewrite ^\/(us)\/(commercial)\/(industry-expertise)\/(correspondent-banking)\/(.*)$https://commercial.bmo.com/en/us/industry-expertise/correspondent-banking/ permanent;
+
+  rewrite ^\/(us)\/(commercial)\/(industry-expertise)\/(educational-institutions)\/(.*)$ https://commercial.bmo.com/en/us/industry-expertise/educational-institutions/ permanent;
+  rewrite ^\/(us)\/(commercial)\/(industry-expertise)\/(futures-and-securities)\/(.*)$ https://commercial.bmo.com/en/us/industry-expertise/futures-securities/ permanent;
+  rewrite ^\/(us)\/(commercial)\/(industry-expertise)\/(commercial-real-estate)\/(.*)$ https://commercial.bmo.com/en/us/industry-expertise/commercial-real-estate/ permanent;
+  
+  ####
+  #duplicate destn
+  #rewrite ^\/(us)\/(commercial)\/(industry-expertise)\/(governments)\/(.*)$ https://commercial.bmo.com/en/us/industry-expertise/educational-institutions/ permanent;
+  rewrite ^\/(us)\/(commercial)\/(industry-expertise)\/(governments)\/(.*)$ https://commercial.bmo.com/en/us/industry-expertise/governments/ permanent;
+  ####
+
+  rewrite ^\/(us)\/(commercial)\/(industry-expertise)\/(futures-and-securities)\/(.*)$ https://commercial.bmo.com/en/us/industry-expertise/futures-securities/ permanent;
+  rewrite ^\/(us)\/(commercial)\/(industry-expertise)\/(specialty-finance)\/(.*)$ https://commercial.bmo.com/en/us/industry-expertise/specialty-finance/ permanent;
+  rewrite ^\/(us)\/(commercial)\/(industry-expertise)\/(food)\/(.*)$ https://commercial.bmo.com/en/us/industry-expertise/food/ permanent;
+  rewrite ^\/(us)\/(commercial)\/(industry-expertise)\/(not-for-profit-organizations)\/(.*)$ https://commercial.bmo.com/en/us/industry-expertise/not-profit-organizations/ permanent;
+
+
+  #####
+  #rewrite ^/en/search\/?keywords\=covid\-19\&language\/(.*) https://commercial.bmo.com/en/us/we-can-help/addressing-covid-19/ permanent;
+
+  rewrite ^\/(industry-expertise)\/(commercial-real-estate)\/(.*)$ https://commercial.bmo.com/en/us/industry-expertise/commercial-real-estate/ permanent;
+  rewrite ^/en/industry-expertise/fuel-services\/?ecid=va-DT9223COM1-YTBMOH24 https://commercial.bmo.com/en/us/industry-expertise/fuel-services/ permanent;
+  rewrite ^/en/industry-expertise/agribusiness-protein\?ecid=va-DT9223COM1-YTBMOH21 https://commercial.bmo.com/en/us/industry-expertise/agribusiness-protein/ permanent;
+  rewrite ^/en/industry-expertise/retail\?ecid=va-DT9223COM1-YTBMOH16 https://commercial.bmo.com/en/us/industry-expertise/retail/ permanent;
+  rewrite ^/industry-expertise/food\/?ecid=va-DT-9223-SKBMOH73 https://commercial.bmo.com/en/us/industry-expertise/food/ permanent;
+  #####
+
+  #rewrite ^/en/industry-expertise/franchise/?ecid=va-DT-9223-SKBMOH28 https://commercial.bmo.com/en/us/industry-expertise/franchise/ permanent;
+  rewrite ^/en/industry-expertise/fuel-services/?ecid=va-DT9223COM1-YTBMOH22 https://commercial.bmo.com/en/us/industry-expertise/fuel-services/ permanent;
+  rewrite ^/en/industry-expertise/metals\/?ecid=va-DT9223COM1-YTBMOH19 https://commercial.bmo.com/en/us/industry-expertise/metals/ permanent;
+  rewrite ^/en/industry-expertise/transportation-finance/ https://commercial.bmo.com/en/us/industry-expertise/us-trucking/ permanent;
+  #####
+
+  rewrite ^/we-can-help/manage-cash-flow\?ecid=va-DT-9223-SKBMOH60	https://commercial.bmo.com/en/us/we-can-help/manage-cash-flow/ permanent;
+  rewrite ^/we-can-help/equipment-finance?ecid=va-DT-9223-SKBMOH25 https://commercial.bmo.com/en/us/we-can-help/equipment-finance/ permanent;
+  rewrite ^/we-can-help/asset-based-lending\/?ecid=va-DT-9223-SKBMOH14 https://commercial.bmo.com/en/us/we-can-help/asset-based-lending/ permanent;
+  rewrite ^\/(we-can-help)\/(manage-cash-flow)\/(.*)  https://commercial.bmo.com/en/us/we-can-help/manage-cash-flow/ permanent;
+  #####
+
+  rewrite ^/industry-expertise/healthcare\/?ecid=va-DT-9223-SKBMOH32 https://commercial.bmo.com/en/us/industry-expertise/healthcare/ permanent;
+  rewrite ^/industry-expertise/private-equity-sponsors\?ecid=va-DT-9223-SKBMOH43 https://commercial.bmo.com/en/us/industry-expertise/private-equity-sponsors/ permanent;
+  rewrite ^/industry-expertise/food/?ecid=va-DT-9223-SKBMOH27 https://commercial.bmo.com/en/us/industry-expertise/food/ permanent;
+  #####
+
+  rewrite ^/en/we-can-help/corporate-advisory\/?ecid=va-DT9223COM1-YTBMOH26 https://commercial.bmo.com/en/us/we-can-help/corporate-advisory/ permanent;
+  rewrite ^/en/we-can-help/addressing-covid-19\/?ecid=va-DT9223COM1-YTBMOH29 https://commercial.bmo.com/en/us/we-can-help/addressing-covid-19/ permanent;
+  rewrite ^/en/we-can-help/corporate-advisory\?ecid=va-DT9223COM1-YTBMOH14  https://commercial.bmo.com/en/us/we-can-help/corporate-advisory/ permanent;
+  rewrite ^/en/we-can-help/mergers-acquisitions/ https://commercial.bmo.com/en/us/we-can-help/mergers-acquisitions/ permanent;
+  #####
+
+  #default rewrites
+  rewrite ^\/(we-can-help)\/(.*)$ https://commercial.bmo.com/en/us/$1/$2 last;
+  rewrite ^\/(en)\/(resource)\/(.*)$ https://commercial.bmo.com/$1/us/$2/$3 last;
+  rewrite ^\/(industry-expertise)\/(.*)$ https://commercial.bmo.com/en/us/$1/$2 last;
+  rewrite ^\/(en)\/(industry-expertise)\/(.*)$ https://commercial.bmo.com/$1/us/$2/$3 last;
+  rewrite ^\/(en)\/(we-can-help)\/(.*)$ https://commercial.bmo.com/$1/us/$2/$3 last;
+  rewrite ^\/(en)\/(our-bankers)\/(.*)$ https://commercial.bmo.com/$1/us/$2/$3 last;
+  rewrite ^\/(en)\/(who-we-are)\/(.*)$ https://commercial.bmo.com/$1/us/$2/$3 last;
+  rewrite ^\/(us)\/(commercial)\/(solutions)\/(treasury-management)\/(.*)$ https://commercial.bmo.com/en/us/we-can-help/manage-cash-flow/ last;
+  rewrite ^\/(us)\/(commercial)\/(.*)$ https://commercial.bmo.com/en/$1/$2/$3 last;
+  rewrite ^\/ https://commercial.bmo.com/en/us last;
+}

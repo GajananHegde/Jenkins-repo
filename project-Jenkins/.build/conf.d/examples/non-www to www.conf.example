@@ -1,0 +1,106 @@
+# NON-WWW
+server {
+    listen       *:80;
+    listen       *:443 ssl http2;
+
+    ssl_certificate /etc/nginx/conf.d/default.crt;
+    ssl_certificate_key /etc/nginx/conf.d/default.key;
+    ssl_dhparam /etc/nginx/conf.d/default.dhparam.pem;
+    ssl_session_cache shared:SSL:10m;
+    ssl_session_timeout 180m;
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+    ssl_prefer_server_ciphers on;
+    ssl_ciphers ECDH+AESGCM:ECDH+AES256:ECDH+AES128:DHE+AES128:!ADH:!AECDH:!MD5;
+
+    add_header Strict-Transport-Security "max-age=31536000" always;
+
+    server_name "~^(?!www\.).*";
+
+    server_tokens off;
+
+    charset              utf-8;
+
+    client_max_body_size 4G;
+
+    # access_log  /var/log/nginx/default.redirect.access.log  main;
+    # error_log  /var/log/nginx/default.redirect.error.log;
+
+    root /usr/share/nginx/html;
+    index index.html;
+
+    location / {
+      if ($scheme = 'http') {
+        return 302 https://$host$request_uri;
+      }
+
+      location ~* \.(?:manifest|appcache|html?|xml|json)$ {
+        add_header Cache-Control "max-age=0";
+      }
+
+      location ~* \.(?:rss|atom)$ {
+        add_header Cache-Control "max-age=3600";
+      }
+
+      location ~* \.(?:jpg|jpeg|gif|png|ico|cur|gz|svg|mp4|ogg|ogv|webm|htc)$ {
+        add_header Cache-Control "max-age=2592000";
+        access_log off;
+        error_log off;
+      }
+
+      location ~* \.svgz$ {
+        add_header Cache-Control "max-age=2592000";
+        gzip off;
+        access_log off;
+        error_log off;
+      }
+
+      location ~* \.(?:css|js)$ {
+        add_header Cache-Control "max-age=31536000";
+        access_log off;
+        error_log off;
+      }
+
+      location ~* \.(?:ttf|ttc|otf|eot|woff|woff2)$ {
+        add_header Cache-Control "max-age=2592000";
+        access_log off;
+        error_log off;
+      }
+
+      try_files $uri /index.html =404;
+    }
+}
+
+# WWW
+server {
+    listen       *:80;
+    listen       *:443 ssl http2;
+
+    ssl_certificate /etc/nginx/conf.d/default.crt;
+    ssl_certificate_key /etc/nginx/conf.d/default.key;
+    ssl_dhparam /etc/nginx/conf.d/default.dhparam.pem;
+    ssl_session_cache shared:SSL:10m;
+    ssl_session_timeout 180m;
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+    ssl_prefer_server_ciphers on;
+    ssl_ciphers ECDH+AESGCM:ECDH+AES256:ECDH+AES128:DHE+AES128:!ADH:!AECDH:!MD5;
+
+    add_header Strict-Transport-Security "max-age=31536000" always;
+
+    server_name "~^www\.(.*)$";
+
+    server_tokens off;
+
+    charset              utf-8;
+
+    client_max_body_size 4G;
+
+    # access_log  /var/log/nginx/default.access.log  main;
+    # error_log  /var/log/nginx/default.error.log;
+
+    root /usr/share/nginx/html;
+    index index.html;
+
+    location / {
+      return 302 $scheme://www.$host$request_uri;
+    }
+}
