@@ -1,0 +1,139 @@
+upstream commercial_app_prod_us {
+  server localhost:8092 fail_timeout=0;
+}
+limit_req_zone $binary_remote_addr zone=commercial_app_prod_us:10m rate=10r/s;
+
+server {
+  if ($request_method !~ ^(GET|POST|PUT|DELETE|OPTIONS)$) {
+    return 444;
+  }
+
+  listen 80;
+
+  ## Security headers for Nginx ##
+  # add_header Strict-Transport-Security "max-age=15768000" always;
+  add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+  add_header X-Content-Type-Options "nosniff" always;
+  add_header X-Frame-Options "SAMEORIGIN" always;
+  add_header X-Xss-Protection "1; mode=block" always;
+  add_header Referrer-Policy strict-origin-when-cross-origin;
+  add_header Feature-policy "accelerometer 'none'; camera 'none'; geolocation 'none'; gyroscope 'none'; magnetometer 'none'; microphone 'none'; payment 'none'; usb 'none'";
+  add_header content-security-policy "base-uri 'self'; frame-ancestors 'self' https://www.youtube.com https://youtu.be youtube.com https://player.vimeo.com https://megaphone.fm/ https://playlist.megaphone.fm https://megaphone.link; img-src 'self' 'unsafe-inline' https://d2t1fx2jgbhsez.cloudfront.net https://dpm.demdex.net https://commercial.bmo.com https://commercial.bmo.com https://www.googletagmanager.com https://bat.bing.com https://smetrics.bmo.com https://cm.everesttech.net https://dpm.demdex.net https://tags.bluekai.com https://ad.doubleclick.net https://idsync.rlcdn.com https://tapestry.tapad.com https://www.facebook.com https://www.google-analytics.com; object-src 'none'; default-src 'self' blob: 'unsafe-inline' 'unsafe-eval' https://smetrics.bmo.com https://commercial.bmo.com  https://commercial.bmo.com https://www.google.com https://dpm.demdex.net youtube.com https://www.youtube.com https://youtu.be https://player.vimeo.com https://megaphone.fm/ https://playlist.megaphone.fm https://megaphone.link https://bankofmontreal.us-1.evergage.com doubleclick.net https://www.google-analytics.com https://bmofinancial.demdex.net https://d2t1fx2jgbhsez.cloudfront.net *.doubleclick.net; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://d2t1fx2jgbhsez.cloudfront.net https://ajax.googleapis.com https://code.jquery.com https://cdnjs.cloudflare.com https://www.gstatic.com https://www.google.com/recaptcha/api.js https://connect.facebook.net https://www.google-analytics.com/analytics.js https://cdn.evgnet.com/beacon/bankofmontreal/engage/scripts/evergage.min.js https://bankofmontreal.us-1.evergage.com https://bat.bing.com https://www.googletagmanager.com https://www.youtube.com https://youtu.be https://player.vimeo.com https://megaphone.fm/ https://playlist.megaphone.fm https://megaphone.link https://bpi.briteverify.com https://api.demandbase.com https://vt.myvisualiq.net https://dpm.demdex.net https://tags.bluekai.com https://ad.doubleclick.net https://idsync.rlcdn.com https://tapestry.tapad.com https://www.facebook.com https://www.google-analytics.com *.doubleclick.net; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://d2t1fx2jgbhsez.cloudfront.net; font-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://d2t1fx2jgbhsez.cloudfront.net" always;
+
+  server_name commercial.bmo.com www.commercial.bmo.com bmo-us-commercial-prod.galepartners.com;
+  server_tokens off;
+  charset utf-8;
+  client_max_body_size 4G;
+  keepalive_timeout 60;
+  error_log /tmp/bmoharris_us.log notice;
+  rewrite_log on;
+
+  satisfy any;
+  allow all;
+
+
+  #  location /robots.txt { return 200 "User-agent: *\nDisallow: /\n"; }
+  location = /mediaesfheartbeat.txt {
+    add_header Content-Type text/plain;
+    alias /application/django-media/mediaesfheartbeat.txt;
+  }
+
+  error_page 403 = @403;
+
+  location @403 {
+    include /etc/nginx/conf.d/uwsgi_params;
+    uwsgi_pass commercial_app_prod_us;
+  }
+
+  location /static {
+    access_log off;
+    add_header 'Access-Control-Allow-Origin' '*';
+    add_header Cache-Control "max-age=2592000";
+    alias /application/django-assets;
+    allow all;
+  }
+
+  location /media {
+    access_log off;
+    add_header Cache-Control "max-age=2592000";
+    alias /application/django-media;
+  }
+
+  # prevent admin access in production
+  rewrite ^(.*)?/admin/ / permanent;
+  rewrite ^(.*)?/cms/ / permanent;
+
+  rewrite ^(.*)?/admin$ / permanent;
+  rewrite ^(.*)?/cms$ / permanent;
+
+  ##
+  rewrite ^\/(en)\/(resource)\/(.*)$ https://commercial.bmo.com/$1/ca/$2/$3 last;
+  rewrite ^\/(en)\/(resources)\/(.*)$ https://commercial.bmo.com/$1/ca/$2/$3 last;
+  rewrite ^\/(en)\/(industry-expertise)\/(.*)$ https://commercial.bmo.com/$1/ca/$2/$3 last;
+  rewrite ^\/(en)\/(we-can-help)\/(.*)$ https://commercial.bmo.com/$1/ca/$2/$3 last;
+  rewrite ^\/(en)\/(our-bankers)\/(.*)$ https://commercial.bmo.com/$1/ca/$2/$3 last;
+  rewrite ^\/(en)\/(who-we-are)\/(.*)$ https://commercial.bmo.com/$1/ca/$2/$3 last;
+  ##
+
+  rewrite ^/media/filer_public/b8/32/b8327acd-b66b-4614-a94f-6f9e8dd9a61a/covid-19_economicresponse_ccb_final_fr_printable_20-0804.pdf /filer/sharing/1586275438/4860/ redirect;
+  rewrite ^/media/filer_public/6c/e6/6ce66bc4-c71f-4a2f-96c6-1f426037000a/covid-19_economicresponse_ccb_final_eng_printable_20-0804.pd /filer/sharing/1586202205/4857/ redirect;
+
+
+  #EST noon - 20220916 changes
+  rewrite ^/industry-expertise/engineering-construction/\?ecid\=va-DT-9223-SKBMOH22 /en/us/industry-expertise/engineering-construction/ permanent;
+
+
+  rewrite ^/en/industry-expertise/engineering-construction/?ecid=va-DT-9223-SKBMOH22 /en/ca/industry-expertise/engineering-construction/ permanent;
+  rewrite ^/industry-expertise/engineering-construction/?ecid=va-DT-9223-SKBMOH22 /en/us/industry-expertise/engineering-construction/ permanent;
+
+
+  #combined - from CA server
+  rewrite ^/en/industry-expertise/commercial-real-estate/ /en/ca/industry-expertise/commercial-real-estate/ permanent;
+
+  # 17th sept redirection - Karthik
+
+  location / {
+    #add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+    # Force cookie rewrite with HttpOnly and secure flag
+    proxy_cookie_path / "/; HTTPOnly; Secure";
+
+    location ~* \.(?:manifest|appcache|html?|json)$ {
+      add_header Cache-Control "max-age=0";
+    }
+
+    location ~* \.(?:rss|atom)$ {
+      add_header Cache-Control "max-age=3600";
+    }
+
+    location ~* \.(?:jpg|jpeg|gif|png|ico|cur|gz|svg|mp4|ogg|ogv|webm|htc)$ {
+      access_log off;
+      add_header Cache-Control "max-age=2592000";
+    }
+
+    location ~* \.svgz$ {
+      access_log off;
+      gzip off;
+      add_header Cache-Control "max-age=2592000";
+    }
+
+    location ~* \.(?:css|js)$ {
+      add_header Cache-Control "max-age=31536000";
+      access_log off;
+    }
+
+    location ~* \.(?:ttf|ttc|otf|eot|woff|woff2)$ {
+      add_header Cache-Control "max-age=2592000";
+      access_log off;
+    }
+
+    if ( $query_string = "edit" ) {
+      return 403;
+    }
+
+    include /etc/nginx/conf.d/uwsgi_params;
+    uwsgi_pass commercial_app_prod_us;
+    limit_req zone=commercial_app_prod_us burst=200 nodelay;
+
+  }
+}
+

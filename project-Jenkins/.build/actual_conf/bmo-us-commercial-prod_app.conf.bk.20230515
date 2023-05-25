@@ -172,10 +172,6 @@ server {
   ## BCME-154
   rewrite ^/mcdonalds-operators /en/us/industry-expertise/mcdonalds-operators/ permanent;
 
-  ## BCME-159
-  #rewrite "^/dealerfinance" /en/us/industry-expertise/dealer-finance/ permanent;
-  #rewrite ^/financialstability /en/us/search/?keywords=financial%20stability&language=en permanent;
-
   location / {
     #add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
     # Force cookie rewrite with HttpOnly and secure flag

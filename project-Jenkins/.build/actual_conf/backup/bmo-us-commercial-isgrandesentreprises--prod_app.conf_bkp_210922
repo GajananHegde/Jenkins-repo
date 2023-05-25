@@ -1,0 +1,21 @@
+server {
+  if ($request_method !~ ^(GET|POST|PUT|DELETE|OPTIONS)$) {
+    return 444;
+  }
+
+  listen 80;
+
+  server_name grandesentreprises.bmo.com www.grandesentreprises.bmo.com;
+  server_tokens off;
+
+  rewrite ^\/(fr)\/(resource)\/(.*)$ https://entreprises.bmo.com/$1/ca/$2/$3 last;
+  rewrite ^\/(fr)\/(resources)\/(.*)$ https://entreprises.bmo.com//$1/ca/$2/$3 last;
+  rewrite ^\/(fr)\/(industry-expertise)\/(.*)$ https://entreprises.bmo.com/$1/ca/$2/$3 last;
+  rewrite ^\/(fr)\/(we-can-help)\/(.*)$ https://entreprises.bmo.com/$1/ca/$2/$3 last;
+  rewrite ^\/(fr)\/(our-bankers)\/(.*)$ https://entreprises.bmo.com/$1/ca/$2/$3 last;
+  rewrite ^\/(fr)\/(who-we-are)\/(.*)$ https://entreprises.bmo.com/$1/ca/$2/$3 last;
+  rewrite ^\/(fr)\/(expertise-sectorielle)\/(.*)$ https://entreprises.bmo.com/$1/ca/$2/$3 last;
+  rewrite ^\/(fr)\/(ce-que-nous-sommes)\/(.*)$ https://entreprises.bmo.com/$1/ca/$2/$3 last;
+  rewrite ^\/ https://entreprises.bmo.com/fr/ca last;
+}
+
