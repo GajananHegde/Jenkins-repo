@@ -45,6 +45,14 @@ def inject_env (String variable1){
     // }
 }
 
+def second_function (){
+    stage('step after nginx'){
+        sh """
+        echo blah
+        """
+    }
+}
+
 def test_cli_command(String env_file)
 {
     sh """
@@ -84,6 +92,7 @@ def mainfunc(String choices, String param){
             echo "We are in the frontend section"
             inject_env(env.variable1)
             inject_env(env.variable2)
+            second_function()
             // for ( str in choices){
             //     print(str)
             // }
