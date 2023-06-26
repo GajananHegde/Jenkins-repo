@@ -20,7 +20,14 @@ def inject_env (String variable1){
     env.nginx_configs_path='.Build-Dir/project-Jenkins/.build/nginx'
     env.env_file_name="\'p-bmo-commercial-nginx-us-redirect-prod-app-1\' \'p-bmo-commercial-nginx-us-redirect-prod-app-2\'"
     env.aws_region='us-west-2'
-    env.build_environment = 'cft-qa'
+    switch (variable1) {
+        case 'first':
+            env.build_environment = 'cft-qa'
+            break
+        case 'second':
+            env.build_environment = 'stable'
+            break
+    }
     // test_cli_command(env.env_file_name)
     // env.stringArray="one,two,three"
     // for_loop_test(env.stringArray)
@@ -86,7 +93,9 @@ def mainfunc(String choices, String param){
             '''
             }
             echo "We are in the frontend section"
-            inject_env(env.variable1)
+            inject_env('first')
+            second_function()
+            inject_env('second')
             second_function()
             // for ( str in choices){
             //     print(str)
