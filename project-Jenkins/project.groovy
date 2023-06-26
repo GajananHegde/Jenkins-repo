@@ -20,23 +20,11 @@ def inject_env (String variable1){
     env.nginx_configs_path='.Build-Dir/project-Jenkins/.build/nginx'
     env.env_file_name="\'p-bmo-commercial-nginx-us-redirect-prod-app-1\' \'p-bmo-commercial-nginx-us-redirect-prod-app-2\'"
     env.aws_region='us-west-2'
+    env.build_environment = 'cft-qa'
     // test_cli_command(env.env_file_name)
     // env.stringArray="one,two,three"
     // for_loop_test(env.stringArray)
-    // print(env.stringArray instanceof String)
-    sh """
-    echo "${variable1} this is the test"
-    export PATH=/usr/local/bin
-    cd ${nginx_configs_path}
-    /usr/local/bin/docker-compose -f docker-compose-nginx.yml down
-    /bin/sleep 3
-    /usr/local/bin/docker-compose -f docker-compose-nginx.yml up -d
-    /bin/sleep 3
-    /bin/rm -rf conf_template && /bin/mkdir conf_template && /bin/cp -r conf.d/* conf_template/
-    /usr/local/bin/docker-compose -f docker-compose-nginx.yml exec -T nginx nginx -s reload
-    /bin/sleep 3
-    /usr/local/bin/docker-compose -f docker-compose-nginx.yml down
-    """
+    // print(env.stringArray instanceof String
 
     // switch(build_branch) {
     //     case 'develop':
@@ -52,7 +40,11 @@ def inject_env (String variable1){
 def second_function (){
     stage('step after nginx'){
         sh """
-        echo blah
+        if [ ${build_environment} == 'cft-qa' ]; then
+         echo "env is ${build_environment} - inside if"
+        else
+         echo "env is ${build_environment} - inside else"
+        fi
         """
     }
 }
@@ -95,7 +87,6 @@ def mainfunc(String choices, String param){
             }
             echo "We are in the frontend section"
             inject_env(env.variable1)
-            inject_env(env.variable2)
             second_function()
             // for ( str in choices){
             //     print(str)
