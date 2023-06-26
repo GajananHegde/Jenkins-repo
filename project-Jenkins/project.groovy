@@ -47,7 +47,7 @@ def inject_env (String variable1){
 def second_function (){
     stage('step after nginx'){
         sh """
-        if [ ${build_environment} == 'cft-qa' ]; then
+        if [ ${build_environment} == 'cft-qa']; then
          echo "env is ${build_environment} - inside if"
         else
          echo "env is ${build_environment} - inside else"
