@@ -18,6 +18,10 @@ def inject_env (String variable1){
     env.environ_file='.Build-Dir/project-Jenkins/.build/env'
     env.nginx_file_path = '.Build-Dir/project-Jenkins/.build/'
     env.nginx_configs_path='.Build-Dir/project-Jenkins/.build/nginx'
+    env.maintenance_page_dir = '.Build-Dir/project-Jenkins/.build/maitenance'
+    env.ssh_username = 'gajanan.hegde'
+    env.nginx_conf_dir = '/home/gajanan.hegde/Work/projects/bmo'
+    deploy_ssh_host = 'devopsworkspace-d.gale-services-default.g43labs.net'
     env.env_file_name="\'p-bmo-commercial-nginx-us-redirect-prod-app-1\' \'p-bmo-commercial-nginx-us-redirect-prod-app-2\'"
     env.aws_region='us-west-2'
     switch (variable1) {
@@ -78,6 +82,13 @@ def inject_stage (String build_branch){
     }
 }
 
+def scp_load_test()
+{
+    h """
+        scp -r -o "StrictHostKeyChecking=no" ${maintenance_page_dir} ${ssh_username}@${deploy_ssh_host}:${nginx_conf_dir}
+    """
+}
+
 
 // def mainfunc(String build_branch, String build_number, String build_job, String build_url) {
 def mainfunc(String choices, String param){
@@ -93,10 +104,11 @@ def mainfunc(String choices, String param){
             '''
             }
             echo "We are in the frontend section"
-            inject_env('first')
-            second_function()
-            inject_env('second')
-            second_function()
+            // inject_env('first')
+            // second_function()
+            // inject_env('second')
+            // second_function()
+            scp_load_test()
             // for ( str in choices){
             //     print(str)
             // }
