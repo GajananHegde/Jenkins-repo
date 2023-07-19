@@ -11,7 +11,7 @@ def for_loop_test(String numbers)
     // env.command1=command
 }
 
-def inject_env (String variable1){
+def inject_env(String variable1){
     env.HEY_YO_THIS_IS_THE_PLACE_HOLDER = '--firstArg first --secondArg second'
     env.deploy_test_var1='Var 1 - Hello'
     env.deploy_test_var2='Var 2 - World'
@@ -22,16 +22,16 @@ def inject_env (String variable1){
     env.ssh_username = 'gajanan.hegde'
     env.nginx_conf_dir = '/home/gajanan.hegde/Work/projects/bmo'
     deploy_ssh_host = 'devopsworkspace-d.gale-services-default.g43labs.net'
-    env.env_file_name="\'p-bmo-commercial-nginx-us-redirect-prod-app-1\' \'p-bmo-commercial-nginx-us-redirect-prod-app-2\'"
-    env.aws_region='us-west-2'
-    switch (variable1) {
-        case 'first':
-            env.build_environment = 'cft-qa'
-            break
-        case 'second':
-            env.build_environment = 'stable'
-            break
-    }
+    // env.env_file_name="\'p-bmo-commercial-nginx-us-redirect-prod-app-1\' \'p-bmo-commercial-nginx-us-redirect-prod-app-2\'"
+    // env.aws_region='us-west-2'
+    // switch (variable1) {
+    //     case 'first':
+    //         env.build_environment = 'cft-qa'
+    //         break
+    //     case 'second':
+    //         env.build_environment = 'stable'
+    //         break
+    // }
     // test_cli_command(env.env_file_name)
     // env.stringArray="one,two,three"
     // for_loop_test(env.stringArray)
@@ -104,7 +104,7 @@ def mainfunc(String choices, String param){
             '''
             }
             echo "We are in the frontend section"
-            // inject_env('first')
+            inject_env('first')
             // second_function()
             // inject_env('second')
             // second_function()
