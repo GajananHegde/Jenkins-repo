@@ -18,7 +18,7 @@ def inject_env(String variable1){
     env.environ_file='.Build-Dir/project-Jenkins/.build/env'
     env.nginx_file_path = '.Build-Dir/project-Jenkins/.build/'
     env.nginx_configs_path='.Build-Dir/project-Jenkins/.build/nginx'
-    env.maintenance_page_dir = '.Build-Dir/project-Jenkins/.build/maitenance'
+    env.maintenance_page_dir = '.Build-Dir/project-Jenkins/.build/maintenance'
     env.ssh_username = 'gajanan.hegde'
     env.nginx_conf_dir = '/home/gajanan.hegde/Work/projects/bmo'
     deploy_ssh_host = 'devopsworkspace-d.gale-services-default.g43labs.net'
