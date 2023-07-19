@@ -85,7 +85,7 @@ def inject_stage (String build_branch){
 def scp_load_test()
 {
     sh """
-        rsync -e \"ssh -o StrictHostKeyChecking=no\" -avh ${maintenance_page_dir}/ ${ssh_username}@${deploy_ssh_host}:${nginx_conf_dir}/maintenance/
+        rsync -e \"ssh -o StrictHostKeyChecking=no\" -avh ${maintenance_page_dir}/ ${ssh_username}@${deploy_ssh_host}:${nginx_conf_dir}/maintenance/ --delete
     """
     // ssh -o \"StrictHostKeyChecking=no\" ${ssh_username}@${deploy_ssh_host} \"cd .Build-Dir/project-Jenkins/.build/ && rm -rf maintenance
 }
