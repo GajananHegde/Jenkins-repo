@@ -84,7 +84,7 @@ def inject_stage (String build_branch){
 
 def scp_load_test()
 {
-    h """
+    sh """
         scp -r -o "StrictHostKeyChecking=no" ${maintenance_page_dir} ${ssh_username}@${deploy_ssh_host}:${nginx_conf_dir}
     """
 }
