@@ -90,53 +90,83 @@ def scp_load_test()
     // ssh -o \"StrictHostKeyChecking=no\" ${ssh_username}@${deploy_ssh_host} \"cd .Build-Dir/project-Jenkins/.build/ && rm -rf maintenance
 }
 
+def db_sync_from()
+{
+    sh """
+    aws ecs run-task \
+       --cluster p-dash-rdsbackup \
+       --task-definition rdsbackup-taskdefinitions:3 \
+       --launch-type FARGATE \
+       --overrides '{"containerOverrides": [{"name": "rdsbackup", "environment": [{ "name": "IS_DOWNSYNC_DB", "value": "True"},{"name": "ISFROM", "value": "True"},{"name": "UPSTREAM_CLIENT_NAME_BUILD", "value": "${upstream_environment}},{"name": "UPSTREAM_ENV_LETTER_BUILD", "value": "${upstream_environment_start_letter}"},{"name": "TARGETPATH", "value": "${environment}/${upstream_environment}/$(date "+%Y_%m_%d)-${env.BUILD_NUMBER}"}]}]}' \
+       --network-configuration "awsvpcConfiguration={subnets=['subnet-009b9198c8c676ea5'],securityGroups=['sg-0cf66b11b856e9af5'],assignPublicIp='ENABLED'}"
+    """
+}
+
+def db_sync_to()
+{
+    sh """
+    aws ecs run-task \
+        --cluster p-dash-rdsbackup \
+        --task-definition rdsbackup-taskdefinitions:3 \
+        --launch-type FARGATE \
+        --overrides '{"containerOverrides": [{"name": "rdsbackup", "environment": [{ "name": "IS_DOWNSYNC_DB", "value": "True"},{"name": "ISFROM", "value": "False"},{"name": "DOWNSTREAM_CLIENT_NAME_BUILD", "value": "${downstream_environment}},{"name":"DOWNSTREAM_ENV_LETTER_BUILD", "value": "${downstream_environment_start_letter}"},{"name": "SOURCEPATH", "value": "${environment}/${downstreamstream_environment}/$(date "+%Y_%m_%d)-${env.BUILD_NUMBER}"},{"name": "TARGETPATH", "value": "${environment}/${downstream_environment}/$(date "+%Y_%m_%d)-${env.BUILD_NUMBER}"}]}]}' \
+        --network-configuration "awsvpcConfiguration={subnets=['subnet-0a1807c169d4ba548','subnet-06163ecaf0273e89d','subnet-0922504ca7a88b1f7'],securityGroups=['sg-0d68a6694858e166a'],assignPublicIp='ENABLED'}"
+    """
+}
+
 
 // def mainfunc(String build_branch, String build_number, String build_job, String build_url) {
-def mainfunc(String choices, String param){
-    echo "-- ENV for building - ${param}"
-    env.variable1 = 'Hohoho'
-    env.variable2 = 'Hehehe'
-    switch(param){
-        case 'Frontend':
-            withCredentials([usernamePassword(credentialsId: 'bad9031b-235c-4373-be6f-4448ea28e601', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-            def encodedPassword = URLEncoder.encode("$GIT_PASSWORD",'UTF-8')
-            sh '''
-            echo hey this is the p[assword] "${GIT_PASSWORD}"
-            '''
-            }
-            echo "We are in the frontend section"
-            inject_env('first')
-            // second_function()
-            // inject_env('second')
-            // second_function()
-            scp_load_test()
-            // for ( str in choices){
-            //     print(str)
-            // }
-            // sh """
-            //     sed -i '' -e "s/<% DEPLOY_AIRFLOW_DB_USER %>/${param}-${param}/g" ${environ_file}
-            //     sed -i '' -e "s/<% Hey_yo_this_is_the_place_holder %>/${HEY_YO_THIS_IS_THE_PLACE_HOLDER}/g" ${environ_file}
-            //     cat ${environ_file}
-            // """
-            // def stringArray=["one","two","three"]
-            // String command = ""
-            // for ( str in stringArray )
-            // {
-            //     command = command + str + " "
-            // }
-            // env.stringSize=stringArray.size()
-            // echo command
-            // echo param
-            // echo "${env.command1}"
-            // sh """
-            // cat ${env.environ_file}
-            // """
-            break
-        case 'Backend':
-            echo "We are in the Backend section"
-            echo "HELLO BACKEND"
-            sleep(15)
-            break
+def mainfunc(String from_db, String to_db){
+    env.upstream_environment = from_db
+    env.downstream_environment = to_db
+    env.upstream_environment_start_letter = "p"
+    env.upstream_environment_start_letter = "q"
+    db_sync_from()
+    db_sync_to()
+    // echo "-- ENV for building - ${param}"
+    // env.variable1 = 'Hohoho'
+    // env.variable2 = 'Hehehe'
+    // switch(param){
+    //     case 'Frontend':
+    //         withCredentials([usernamePassword(credentialsId: 'bad9031b-235c-4373-be6f-4448ea28e601', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+    //         def encodedPassword = URLEncoder.encode("$GIT_PASSWORD",'UTF-8')
+    //         sh '''
+    //         echo hey this is the p[assword] "${GIT_PASSWORD}"
+    //         '''
+    //         }
+    //         echo "We are in the frontend section"
+    //         inject_env('first')
+    //         // second_function()
+    //         // inject_env('second')
+    //         // second_function()
+    //         scp_load_test()
+    //         // for ( str in choices){
+    //         //     print(str)
+    //         // }
+    //         // sh """
+    //         //     sed -i '' -e "s/<% DEPLOY_AIRFLOW_DB_USER %>/${param}-${param}/g" ${environ_file}
+    //         //     sed -i '' -e "s/<% Hey_yo_this_is_the_place_holder %>/${HEY_YO_THIS_IS_THE_PLACE_HOLDER}/g" ${environ_file}
+    //         //     cat ${environ_file}
+    //         // """
+    //         // def stringArray=["one","two","three"]
+    //         // String command = ""
+    //         // for ( str in stringArray )
+    //         // {
+    //         //     command = command + str + " "
+    //         // }
+    //         // env.stringSize=stringArray.size()
+    //         // echo command
+    //         // echo param
+    //         // echo "${env.command1}"
+    //         // sh """
+    //         // cat ${env.environ_file}
+    //         // """
+    //         break
+    //     case 'Backend':
+    //         echo "We are in the Backend section"
+    //         echo "HELLO BACKEND"
+    //         sleep(15)
+    //         break
     }
 
     // inject_env(build_branch)
