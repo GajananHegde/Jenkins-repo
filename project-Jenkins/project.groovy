@@ -109,7 +109,7 @@ def db_sync_to()
         --cluster p-dash-rdsbackup \
         --task-definition rdsbackup-taskdefinitions:3 \
         --launch-type FARGATE \
-        --overrides '{"containerOverrides": [{"name": "rdsbackup", "environment": [{ "name": "IS_DOWNSYNC_DB", "value": "True"},{"name": "ISFROM", "value": "False"},{"name": "DOWNSTREAM_CLIENT_NAME_BUILD", "value": "${downstream_environment}},{"name":"DOWNSTREAM_ENV_LETTER_BUILD", "value": "${downstream_environment_start_letter}"},{"name": "SOURCEPATH", "value": "${environment}/${downstreamstream_environment}/${downstream_environment}-${env.BUILD_NUMBER}"},{"name": "TARGETPATH", "value": "${environment}/${downstream_environment}/$(date "+%Y_%m_%d)-${env.BUILD_NUMBER}"}]}]}' \
+        --overrides '{"containerOverrides": [{"name": "rdsbackup", "environment": [{ "name": "IS_DOWNSYNC_DB", "value": "True"},{"name": "ISFROM", "value": "False"},{"name": "DOWNSTREAM_CLIENT_NAME_BUILD", "value": "${downstream_environment}},{"name":"DOWNSTREAM_ENV_LETTER_BUILD", "value": "${downstream_environment_start_letter}"},{"name": "SOURCEPATH", "value": "${environment}/${downstreamstream_environment}/${downstream_environment}-${env.BUILD_NUMBER}"},{"name": "TARGETPATH", "value": "${environment}/${downstream_environment}/${downstream_environment}-${env.BUILD_NUMBER}"}]}]}' \
         --network-configuration "awsvpcConfiguration={subnets=['subnet-0a1807c169d4ba548','subnet-06163ecaf0273e89d','subnet-0922504ca7a88b1f7'],securityGroups=['sg-0d68a6694858e166a'],assignPublicIp='ENABLED'}"
     """
 }
