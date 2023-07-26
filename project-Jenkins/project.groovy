@@ -82,6 +82,24 @@ def inject_stage (String build_branch){
     }
 }
 
+def switch_inside_switch(String first, String second)
+{
+    switch (first){
+        case 'one':
+            sh """
+                echo "this is in first switch"
+            """
+            switch(second){
+                case 'two':
+                sh """
+                    echo "this is in second"
+                """
+                break
+            }
+            break
+    }
+}
+
 def scp_load_test()
 {
     sh """
@@ -123,8 +141,9 @@ def mainfunc(String from_db, String to_db){
     env.downstream_environment = to_db
     env.upstream_environment_start_letter = "p"
     env.upstream_environment_start_letter = "q"
-    db_sync_from()
-    db_sync_to()
+    // db_sync_from()
+    // db_sync_to()
+    switch_inside_switch(from_db,to_db)
     // echo "-- ENV for building - ${param}"
     // env.variable1 = 'Hohoho'
     // env.variable2 = 'Hehehe'
