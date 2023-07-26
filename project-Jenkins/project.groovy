@@ -223,5 +223,3 @@ def mainfunc2(String build_branch, String build_number, String build_job, String
         """  
     }
 }
-
-return this
