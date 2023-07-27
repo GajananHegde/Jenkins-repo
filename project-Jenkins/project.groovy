@@ -11,17 +11,17 @@ def for_loop_test(String numbers)
     // env.command1=command
 }
 
-def inject_env(String variable1){
-    env.HEY_YO_THIS_IS_THE_PLACE_HOLDER = '--firstArg first --secondArg second'
-    env.deploy_test_var1='Var 1 - Hello'
-    env.deploy_test_var2='Var 2 - World'
-    env.environ_file='.Build-Dir/project-Jenkins/.build/env'
-    env.nginx_file_path = '.Build-Dir/project-Jenkins/.build/'
-    env.nginx_configs_path='.Build-Dir/project-Jenkins/.build/nginx'
-    env.maintenance_page_dir = '.Build-Dir/project-Jenkins/.build/maintenance'
-    env.ssh_username = 'gajanan.hegde'
-    env.nginx_conf_dir = '/home/gajanan.hegde/Work/projects/bmo'
-    deploy_ssh_host = 'devopsworkspace-d.gale-services-default.g43labs.net'
+// def inject_env(){
+//     env.HEY_YO_THIS_IS_THE_PLACE_HOLDER = '--firstArg first --secondArg second'
+//     env.deploy_test_var1='Var 1 - Hello'
+//     env.deploy_test_var2='Var 2 - World'
+//     env.environ_file='.Build-Dir/project-Jenkins/.build/env'
+//     env.nginx_file_path = '.Build-Dir/project-Jenkins/.build/'
+//     env.nginx_configs_path='.Build-Dir/project-Jenkins/.build/nginx'
+//     env.maintenance_page_dir = '.Build-Dir/project-Jenkins/.build/maintenance'
+//     env.ssh_username = 'gajanan.hegde'
+//     env.nginx_conf_dir = '/home/gajanan.hegde/Work/projects/bmo'
+//     deploy_ssh_host = 'devopsworkspace-d.gale-services-default.g43labs.net'
     // env.env_file_name="\'p-bmo-commercial-nginx-us-redirect-prod-app-1\' \'p-bmo-commercial-nginx-us-redirect-prod-app-2\'"
     // env.aws_region='us-west-2'
     // switch (variable1) {
@@ -46,6 +46,19 @@ def inject_env(String variable1){
     //         }
     //         break
     // }
+// }
+
+def inject_env(deploy_environment){
+    switch (deploy_environment){
+        case 'wells':
+            env.build_env = deploy_environment
+            env.environment_starting_letter = 'p'
+            break
+        case 'cft-qa':
+            env.build_env = deploy_environment
+            env.environment_starting_letter = 'q'
+            break
+    }
 }
 
 def second_function (){
@@ -115,7 +128,7 @@ def db_sync_from()
        --cluster p-dash-rdsbackup \
        --task-definition rdsbackup-taskdefinitions:3 \
        --launch-type FARGATE \
-       --overrides '{"containerOverrides": [{"name": "rdsbackup", "environment": [{ "name": "IS_DOWNSYNC_DB", "value": "True"},{"name": "ISFROM", "value": "True"},{"name": "UPSTREAM_CLIENT_NAME_BUILD", "value": "${upstream_environment}},{"name": "UPSTREAM_ENV_LETTER_BUILD", "value": "${upstream_environment_start_letter}"},{"name": "TARGETPATH", "value": "${upstream_env}/${upstream_environment}/${upstream_environment}-${env.BUILD_NUMBER}"}]}]}' \
+       --overrides '{"containerOverrides": [{"name": "rdsbackup", "environment": [{ "name": "IS_DOWNSYNC_DB", "value": "True"},{"name": "ISFROM", "value": "True"},{"name": "UPSTREAM_CLIENT_NAME_BUILD", "value": "${build_env}},{"name": "UPSTREAM_ENV_LETTER_BUILD", "value": "${environment_starting_letter}"},{"name": "TARGETPATH", "value": "${environment}/${build_env}/${upstream_environment}-${env.BUILD_NUMBER}"}]}]}' \
        --network-configuration "awsvpcConfiguration={subnets=['subnet-009b9198c8c676ea5'],securityGroups=['sg-0cf66b11b856e9af5'],assignPublicIp='ENABLED'}"
     """
 }
@@ -127,7 +140,7 @@ def db_sync_to()
         --cluster p-dash-rdsbackup \
         --task-definition rdsbackup-taskdefinitions:3 \
         --launch-type FARGATE \
-        --overrides '{"containerOverrides": [{"name": "rdsbackup", "environment": [{ "name": "IS_DOWNSYNC_DB", "value": "True"},{"name": "ISFROM", "value": "False"},{"name": "DOWNSTREAM_CLIENT_NAME_BUILD", "value": "${downstream_environment}},{"name":"DOWNSTREAM_ENV_LETTER_BUILD", "value": "${downstream_environment_start_letter}"},{"name": "SOURCEPATH", "value": "${downstream_env}/${downstreamstream_environment}/${downstream_environment}-${env.BUILD_NUMBER}"},{"name": "TARGETPATH", "value": "${downstream_env}/${downstream_environment}/${downstream_environment}-${env.BUILD_NUMBER}"}]}]}' \
+        --overrides '{"containerOverrides": [{"name": "rdsbackup", "environment": [{ "name": "IS_DOWNSYNC_DB", "value": "True"},{"name": "ISFROM", "value": "False"},{"name": "DOWNSTREAM_CLIENT_NAME_BUILD", "value": "${build_env}},{"name":"DOWNSTREAM_ENV_LETTER_BUILD", "value": "${environment_starting_letter}"},{"name": "SOURCEPATH", "value": "${environment}/${build_env}/${upstream_environment}-${env.BUILD_NUMBER}"},{"name": "TARGETPATH", "value": "${environment}/${build_env}/${build_env}-${env.BUILD_NUMBER}"}]}]}' \
         --network-configuration "awsvpcConfiguration={subnets=['subnet-0a1807c169d4ba548','subnet-06163ecaf0273e89d','subnet-0922504ca7a88b1f7'],securityGroups=['sg-0d68a6694858e166a'],assignPublicIp='ENABLED'}"
     """
 }
@@ -135,15 +148,17 @@ def db_sync_to()
 
 // def mainfunc(String build_branch, String build_number, String build_job, String build_url) {
 def mainfunc(String from_db, String to_db){
-    env.upstream_env = "prod"
-    env.downstream_env = "dev"
-    env.upstream_environment = from_db
-    env.downstream_environment = to_db
-    env.upstream_environment_start_letter = "p"
-    env.upstream_environment_start_letter = "q"
+    inject_env(from_db)
+    sh """
+    echo "build_env :${build_env}"
+    """
+    inject_env(to_db)
+    sh """
+    echo "build_env: ${build_env}"
+    """
     // db_sync_from()
     // db_sync_to()
-    switch_inside_switch(from_db,to_db)
+    // switch_inside_switch(from_db,to_db)
     // echo "-- ENV for building - ${param}"
     // env.variable1 = 'Hohoho'
     // env.variable2 = 'Hehehe'
@@ -223,3 +238,5 @@ def mainfunc2(String build_branch, String build_number, String build_job, String
         """  
     }
 }
+
+return this
