@@ -158,12 +158,12 @@ def mainfunc(String from_db, String to_db){
     sh """
     echo "build_env :${build_env}"
     """
+    db_sync_from(from_db)
     inject_env(to_db)
     sh """
     echo "build_env: ${build_env}"
     echo --network-configuration "awsvpcConfiguration={subnets=["${subnets}"],securityGroups=["${security_groups}"],assignPublicIp='ENABLED'}"
     """
-    db_sync_from(from_db)
     db_sync_to(from_db)
     // switch_inside_switch(from_db,to_db)
     // echo "-- ENV for building - ${param}"
