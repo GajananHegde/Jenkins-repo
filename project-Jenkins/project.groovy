@@ -130,7 +130,7 @@ def scp_load_test()
 def db_sync_from(String upstream_environment)
 {
     sh """
-    aws ecs run-task \
+    /opt/homebrew/bin/aws ecs run-task \
        --cluster p-dash-rdsbackup \
        --task-definition rdsbackup-taskdefinitions:3 \
        --launch-type FARGATE \
@@ -142,7 +142,7 @@ def db_sync_from(String upstream_environment)
 def db_sync_to(String upstream_environment)
 {
     sh """
-    aws ecs run-task \
+    /opt/homebrew/bin/aws ecs run-task \
         --cluster p-dash-rdsbackup \
         --task-definition rdsbackup-taskdefinitions:3 \
         --launch-type FARGATE \
