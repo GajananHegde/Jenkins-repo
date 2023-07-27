@@ -53,10 +53,14 @@ def inject_env(deploy_environment){
         case 'wells':
             env.build_env = deploy_environment
             env.environment_starting_letter = 'p'
+            env.subnets = 'subnet-009b9198c8c676ea5'
+            env.security_groups = 'sg-0cf66b11b856e9af5'
             break
         case 'cft-qa':
             env.build_env = deploy_environment
             env.environment_starting_letter = 'q'
+            env.subnets = '\'subnet-0a1807c169d4ba548\',\'subnet-06163ecaf0273e89d\',\'subnet-0922504ca7a88b1f7\''
+            env.security_groups = 'sg-0d68a6694858e166a'
             break
     }
 }
@@ -129,7 +133,7 @@ def db_sync_from()
        --task-definition rdsbackup-taskdefinitions:3 \
        --launch-type FARGATE \
        --overrides '{"containerOverrides": [{"name": "rdsbackup", "environment": [{ "name": "IS_DOWNSYNC_DB", "value": "True"},{"name": "ISFROM", "value": "True"},{"name": "UPSTREAM_CLIENT_NAME_BUILD", "value": "${build_env}},{"name": "UPSTREAM_ENV_LETTER_BUILD", "value": "${environment_starting_letter}"},{"name": "TARGETPATH", "value": "${environment}/${build_env}/${upstream_environment}-${env.BUILD_NUMBER}"}]}]}' \
-       --network-configuration "awsvpcConfiguration={subnets=['subnet-009b9198c8c676ea5'],securityGroups=['sg-0cf66b11b856e9af5'],assignPublicIp='ENABLED'}"
+       --network-configuration "awsvpcConfiguration={subnets=["${subnets}"],securityGroups=["${security_groups}"],assignPublicIp='ENABLED'}"
     """
 }
 
@@ -141,7 +145,7 @@ def db_sync_to()
         --task-definition rdsbackup-taskdefinitions:3 \
         --launch-type FARGATE \
         --overrides '{"containerOverrides": [{"name": "rdsbackup", "environment": [{ "name": "IS_DOWNSYNC_DB", "value": "True"},{"name": "ISFROM", "value": "False"},{"name": "DOWNSTREAM_CLIENT_NAME_BUILD", "value": "${build_env}},{"name":"DOWNSTREAM_ENV_LETTER_BUILD", "value": "${environment_starting_letter}"},{"name": "SOURCEPATH", "value": "${environment}/${build_env}/${upstream_environment}-${env.BUILD_NUMBER}"},{"name": "TARGETPATH", "value": "${environment}/${build_env}/${build_env}-${env.BUILD_NUMBER}"}]}]}' \
-        --network-configuration "awsvpcConfiguration={subnets=['subnet-0a1807c169d4ba548','subnet-06163ecaf0273e89d','subnet-0922504ca7a88b1f7'],securityGroups=['sg-0d68a6694858e166a'],assignPublicIp='ENABLED'}"
+        --network-configuration "awsvpcConfiguration={subnets=["${subnets}"],securityGroups=["${security_groups}"],assignPublicIp='ENABLED'}"
     """
 }
 
@@ -155,6 +159,7 @@ def mainfunc(String from_db, String to_db){
     inject_env(to_db)
     sh """
     echo "build_env: ${build_env}"
+    echo "--network-configuration "awsvpcConfiguration={subnets=["${subnets}"],securityGroups=["${security_groups}"],assignPublicIp='ENABLED'}"
     """
     // db_sync_from()
     // db_sync_to()
