@@ -125,7 +125,7 @@ def scp_load_test()
     // ssh -o \"StrictHostKeyChecking=no\" ${ssh_username}@${deploy_ssh_host} \"cd .Build-Dir/project-Jenkins/.build/ && rm -rf maintenance
 }
 
-def db_sync_from()
+def db_sync_from(String upstream_environment)
 {
     sh """
     aws ecs run-task \
@@ -137,7 +137,7 @@ def db_sync_from()
     """
 }
 
-def db_sync_to()
+def db_sync_to(String upstream_environment)
 {
     sh """
     aws ecs run-task \
@@ -161,8 +161,8 @@ def mainfunc(String from_db, String to_db){
     echo "build_env: ${build_env}"
     echo --network-configuration "awsvpcConfiguration={subnets=["${subnets}"],securityGroups=["${security_groups}"],assignPublicIp='ENABLED'}"
     """
-    // db_sync_from()
-    // db_sync_to()
+    db_sync_from(from_db)
+    db_sync_to(from_db)
     // switch_inside_switch(from_db,to_db)
     // echo "-- ENV for building - ${param}"
     // env.variable1 = 'Hohoho'
