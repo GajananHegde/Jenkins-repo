@@ -166,8 +166,8 @@ def mainfunc(String from_db, String to_db){
     echo "build_env :${build_env}"
     """
     db_sync_from()
-    env.upstream_environment = 'prod'
-    env.upstream_build_env = 'wells'
+    env.upstream_environment = "${env.environment}"
+    env.upstream_build_env = "${env.build_env}"
     inject_env(to_db)
     sh """
     sleep 20
