@@ -166,11 +166,10 @@ def mainfunc(String from_db, String to_db){
     echo "build_env :${build_env}"
     """
     db_sync_from()
-    env.upstream_environment = ${env.environment}
-    env.upstream_build_env = ${env.build_env}
+    env.upstream_environment = 'prod'
+    env.upstream_build_env = 'wells'
     inject_env(to_db)
     sh """
-    echo "build_env: ${build_env}"
     sleep 20
     echo --network-configuration "awsvpcConfiguration={subnets=["${subnets}"],securityGroups=["${security_groups}"],assignPublicIp='ENABLED'}"
     """
