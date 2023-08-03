@@ -134,26 +134,26 @@ def scp_load_test()
     // ssh -o \"StrictHostKeyChecking=no\" ${ssh_username}@${deploy_ssh_host} \"cd .Build-Dir/project-Jenkins/.build/ && rm -rf maintenance
 }
 
-def db_sync_from(String upstream_environment)
+def db_sync_from()
 {
     sh """
     /opt/homebrew/bin/aws ecs run-task \
        --cluster p-dash-rdsbackup \
        --task-definition rdsbackup-taskdefinitions:3 \
        --launch-type FARGATE \
-       --overrides '{"containerOverrides": [{"name": "rdsbackup", "environment": [{ "name": "IS_DOWNSYNC_DB", "value": "True"},{"name": "ISFROM", "value": "True"},{"name": "UPSTREAM_CLIENT_NAME_BUILD", "value": "${build_env}"},{"name": "UPSTREAM_ENV_LETTER_BUILD", "value": "${environment_starting_letter}"},{"name": "TARGETPATH", "value": "${environment}/${build_env}/${upstream_environment}-${env.BUILD_NUMBER}"}]}]}' \
+       --overrides '{"containerOverrides": [{"name": "rdsbackup", "environment": [{ "name": "IS_DOWNSYNC_DB", "value": "True"},{"name": "ISFROM", "value": "True"},{"name": "UPSTREAM_CLIENT_NAME_BUILD", "value": "${build_env}"},{"name": "UPSTREAM_ENV_LETTER_BUILD", "value": "${environment_starting_letter}"},{"name": "TARGETPATH", "value": "${environment}/${build_env}/${build_env}-${env.BUILD_NUMBER}"}]}]}' \
        --network-configuration "awsvpcConfiguration={subnets=["${subnets}"],securityGroups=["${security_groups}"],assignPublicIp='ENABLED'}"
     """
 }
 
-def db_sync_to(String upstream_environment)
+def db_sync_to()
 {
     sh """
     /opt/homebrew/bin/aws ecs run-task \
         --cluster p-dash-rdsbackup \
         --task-definition rdsbackup-taskdefinitions:3 \
         --launch-type FARGATE \
-        --overrides '{"containerOverrides": [{"name": "rdsbackup", "environment": [{ "name": "IS_DOWNSYNC_DB", "value": "True"},{"name": "ISFROM", "value": "False"},{"name": "DOWNSTREAM_CLIENT_NAME_BUILD", "value": "${build_env}"},{"name":"DOWNSTREAM_ENV_LETTER_BUILD", "value": "${environment_starting_letter}"},{"name": "SOURCEPATH", "value": "${environment}/${build_env}/${upstream_environment}-${env.BUILD_NUMBER}"},{"name": "TARGETPATH", "value": "${environment}/${build_env}/${build_env}-${env.BUILD_NUMBER}"}]}]}' \
+        --overrides '{"containerOverrides": [{"name": "rdsbackup", "environment": [{ "name": "IS_DOWNSYNC_DB", "value": "True"},{"name": "ISFROM", "value": "False"},{"name": "DOWNSTREAM_CLIENT_NAME_BUILD", "value": "${build_env}"},{"name":"DOWNSTREAM_ENV_LETTER_BUILD", "value": "${environment_starting_letter}"},{"name": "SOURCEPATH", "value": "${upstream_environment}/${upstream_build_env}/${upstream_build_env}-${env.BUILD_NUMBER}"},{"name": "TARGETPATH", "value": "${environment}/${build_env}/${build_env}-${env.BUILD_NUMBER}"}]}]}' \
         --network-configuration "awsvpcConfiguration={subnets=["${subnets}"],securityGroups=["${security_groups}"],assignPublicIp='ENABLED'}"
     """
 }
@@ -166,6 +166,8 @@ def mainfunc(String from_db, String to_db){
     echo "build_env :${build_env}"
     """
     db_sync_from(from_db)
+    env.upstream_environment = ${environment}
+    env.upstream_build_env = ${build_env}
     inject_env(to_db)
     sh """
     echo "build_env: ${build_env}"
