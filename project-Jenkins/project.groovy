@@ -64,6 +64,13 @@ def inject_env(deploy_environment){
             env.security_groups = 'sg-0d68a6694858e166a'
             env.environment = 'dev'
             break
+        case 'markey':
+            env.build_env = deploy_environment
+            env.environment_starting_letter = 'q'
+            env.subnets = '\'subnet-0a1807c169d4ba548\',\'subnet-06163ecaf0273e89d\',\'subnet-0922504ca7a88b1f7\''
+            env.security_groups = 'sg-0d68a6694858e166a'
+            env.environment = 'dev'
+            break
     }
 }
 
