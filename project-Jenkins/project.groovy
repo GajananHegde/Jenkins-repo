@@ -48,36 +48,40 @@ def for_loop_test(String numbers)
     // }
 // }
 
-def inject_env(deploy_environment){
-    switch (deploy_environment){
-        case 'wells':
-            env.build_env = deploy_environment
-            env.environment_starting_letter = 'p'
-            env.subnets = 'subnet-009b9198c8c676ea5'
-            env.security_groups = 'sg-0cf66b11b856e9af5'
-            env.environment = 'prod'
-            break
-        case 'cft-qa':
-            env.build_env = deploy_environment
-            env.environment_starting_letter = 'q'
-            env.subnets = '\'subnet-0a1807c169d4ba548\',\'subnet-06163ecaf0273e89d\',\'subnet-0922504ca7a88b1f7\''
-            env.security_groups = 'sg-0d68a6694858e166a'
-            env.environment = 'dev'
-            break
-        case 'markey':
-            env.build_env = deploy_environment
-            env.environment_starting_letter = 'q'
-            env.subnets = '\'subnet-0a1807c169d4ba548\',\'subnet-06163ecaf0273e89d\',\'subnet-0922504ca7a88b1f7\''
-            env.security_groups = 'sg-0d68a6694858e166a'
-            env.environment = 'dev'
-            break
-        case 'hnr-qa':
-            env.build_env = deploy_environment
-            env.environment_starting_letter = 'q'
-            env.subnets = '\'subnet-0a1807c169d4ba548\',\'subnet-06163ecaf0273e89d\',\'subnet-0922504ca7a88b1f7\''
-            env.security_groups = 'sg-0d68a6694858e166a'
-            env.environment = 'dev'
-    }
+def inject_env(){
+    // switch (deploy_environment){
+    //     case 'wells':
+    //         env.build_env = deploy_environment
+    //         env.environment_starting_letter = 'p'
+    //         env.subnets = 'subnet-009b9198c8c676ea5'
+    //         env.security_groups = 'sg-0cf66b11b856e9af5'
+    //         env.environment = 'prod'
+    //         break
+    //     case 'cft-qa':
+    //         env.build_env = deploy_environment
+    //         env.environment_starting_letter = 'q'
+    //         env.subnets = '\'subnet-0a1807c169d4ba548\',\'subnet-06163ecaf0273e89d\',\'subnet-0922504ca7a88b1f7\''
+    //         env.security_groups = 'sg-0d68a6694858e166a'
+    //         env.environment = 'dev'
+    //         break
+    //     case 'markey':
+    //         env.build_env = deploy_environment
+    //         env.environment_starting_letter = 'q'
+    //         env.subnets = '\'subnet-0a1807c169d4ba548\',\'subnet-06163ecaf0273e89d\',\'subnet-0922504ca7a88b1f7\''
+    //         env.security_groups = 'sg-0d68a6694858e166a'
+    //         env.environment = 'dev'
+    //         break
+    //     case 'hnr-qa':
+    //         env.build_env = deploy_environment
+    //         env.environment_starting_letter = 'q'
+    //         env.subnets = '\'subnet-0a1807c169d4ba548\',\'subnet-06163ecaf0273e89d\',\'subnet-0922504ca7a88b1f7\''
+    //         env.security_groups = 'sg-0d68a6694858e166a'
+    //         env.environment = 'dev'
+    // }
+    env.record_name = 'testsite-dash.galedash-testing.g43labs.net'
+    env.record_value = 'This is the second blah'
+    env.cname_json = 'cnamerecord.json'
+    env.hostedzoneid = 'Z0716055163IOUTFN9WBX'
 }
 
 def second_function (){
@@ -92,11 +96,12 @@ def second_function (){
     }
 }
 
-def test_cli_command(String env_file)
+def test_cli_command()
 {
     sh """
-    aws s3 ls
-    aws ssm get-parameters --with-decryption --names ${env_file} --region ${aws_region} | jq -r '.Parameters[].Value'
+    sed -i '' -e "s/<% RECORD_NAME %>/${record_name}/g" ${cname_json}
+    sed -i '' -e "s/<% RECORD_VALUE %>/${record_value}/g" ${cname_json}
+    aws route53 change-resource-record-sets --hosted-zone-id ${hostedzoneid} --change-batch file://${cname_json}
     """
 }
 
@@ -167,19 +172,20 @@ def db_sync_to()
 
 // def mainfunc(String build_branch, String build_number, String build_job, String build_url) {
 def mainfunc(String from_db, String to_db){
-    inject_env(from_db)
-    sh """
-    echo "build_env :${build_env}"
-    """
-    db_sync_from()
-    env.upstream_environment = "${env.environment}"
-    env.upstream_build_env = "${env.build_env}"
-    inject_env(to_db)
-    sh """
-    sleep 20
-    echo --network-configuration "awsvpcConfiguration={subnets=["${subnets}"],securityGroups=["${security_groups}"],assignPublicIp='ENABLED'}"
-    """
-    db_sync_to()
+    inject_env()
+    test_cli_command()
+    // sh """
+    // echo "build_env :${build_env}"
+    // """
+    // db_sync_from()
+    // env.upstream_environment = "${env.environment}"
+    // env.upstream_build_env = "${env.build_env}"
+    // inject_env(to_db)
+    // sh """
+    // sleep 20
+    // echo --network-configuration "awsvpcConfiguration={subnets=["${subnets}"],securityGroups=["${security_groups}"],assignPublicIp='ENABLED'}"
+    // """
+    // db_sync_to()
     // switch_inside_switch(from_db,to_db)
     // echo "-- ENV for building - ${param}"
     // env.variable1 = 'Hohoho'
